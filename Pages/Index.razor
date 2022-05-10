@@ -1,4 +1,6 @@
 ﻿@page "/"
+@using WebApp.Data.Movies
+@inject IMovieService MovieService
 
 <PageTitle>Index</PageTitle>
 
@@ -6,4 +8,21 @@
 
 Welcome to your new app.
 
+<p>Title: @title</p>
+
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+@code{
+    private string title;
+
+    protected override async Task OnInitializedAsync()
+    {
+        GetMovieTitle();
+    }
+
+    private async void GetMovieTitle()
+    {
+        var movie = await MovieService.GetMovieByID(414906);
+        title = movie.title;
+    }
+}
