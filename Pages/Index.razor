@@ -17,12 +17,12 @@ Welcome to your new app.
 
     protected override async Task OnInitializedAsync()
     {
-        GetMovieTitle();
+        title = await GetMovieTitle();
     }
 
-    private async void GetMovieTitle()
+    private async Task<string> GetMovieTitle()
     {
         var movie = await MovieService.GetMovieByID(414906);
-        title = movie.title;
+        return movie.title;
     }
 }
