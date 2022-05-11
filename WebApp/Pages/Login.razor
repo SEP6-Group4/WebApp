@@ -1,0 +1,58 @@
+﻿@page "/login"
+@namespace LoginComponent
+
+@using WebApp.Data.Users;
+@using WebApp.Models;
+
+@inject IUserService UserService
+
+<h3>Login</h3>
+
+
+<div class="form-group">
+    <label>Email</label>
+    <input type="text" placeholder="email" @bind-value="email" />
+</div>
+<div class="form-group">
+    <label>Password</label>
+    <input type="password" placeholder="password" @bind-value="password" />
+</div>
+<div style="color:red">@errorMessage</div>
+
+<button @onclick="PerformLogin">
+    Login
+</button>
+<!--
+    <a href="" @onclick="PerformLogout">
+        Logout
+    </a>
+-->
+@code {
+    private string email;
+    private string password;
+    private string errorMessage;
+
+    public async Task PerformLogin()
+    {
+        errorMessage = "";
+        try
+        {
+            User user = await UserService.ValidateUser(email, password);
+
+            if (user == null)
+            {
+                errorMessage = "Validation failed";
+            }
+            else
+            {
+                email = "";
+                password = "";
+                errorMessage = "Success";
+            }
+        }
+        catch (Exception e)
+        {
+            errorMessage = e.Message;
+        }
+    }
+}
