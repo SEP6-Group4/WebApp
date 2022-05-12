@@ -1,0 +1,87 @@
+﻿@page "/Movies"
+@using WebApp.Data.Movies
+@using WebApp.Models
+@inject IMovieService MovieService
+
+@if (movieList.movies == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else if (!movieList.movies.Any())
+{
+    <p>
+        <em>No movie exist. </em>
+    </p>
+}
+else 
+{
+    <div class="container">
+               <div class="row">
+                  <div class="form-outline col-md-8">
+                    <input type="search" placeholder="Search" class="form-control" maxlength="150" />
+                  </div>
+                  <button class="btn btn-primary col-md-1">
+                   <i class="bi bi-search"></i>
+                  </button>
+               </div>
+        <div class="row">
+             @foreach (var m in movieList.movies)
+             {
+              <div class="col-md-2 card">
+                <div class="product-image card-body">
+                    <a href="#" class="card-img">
+                       <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">                               
+                    </a>
+                </div>
+                <div>
+                    <h5 class="title"><a> @m.title</a></h5>
+                    <p>@m.release_date</p>
+                </div>
+              </div>
+            }
+        </div>
+
+        <div class="navbar align-content-center">
+            <button class="btn btn-white" @onclick="PreviousPage" > <i class="bi bi-arrow-left-square"></i> </button>
+                <span>Page @movieList.CurrentPage of @movieList.TotalPage </span>
+            <button class="btn btn-white" @onclick="NextPage" ><i class="bi bi-arrow-right-square"></i> </button>
+        </div>
+    </div>
+}
+@code {
+    private MovieList movieList = new MovieList();
+    private int currentPage = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        movieList = await GetMovies(currentPage);
+    }
+
+    private async Task<MovieList> GetMovies(int page)
+    {
+        var result = await MovieService.GetMovies(page);
+        return result;
+    }
+
+    protected async Task NextPage(MouseEventArgs mouseEventArgs)
+    {
+        if (currentPage < movieList.TotalPage)
+        {
+            currentPage = movieList.CurrentPage + 1;
+            movieList = await GetMovies(currentPage);
+        }
+
+    }
+
+    protected async Task PreviousPage(MouseEventArgs mouseEventArgs)
+    {
+        if (currentPage > 1)
+        {         
+            currentPage = movieList.CurrentPage - 1;
+            movieList = await GetMovies(currentPage);
+        }
+    }
+
+}
