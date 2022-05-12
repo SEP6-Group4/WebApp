@@ -84,7 +84,7 @@ a, .btn-link {
     justify-content:center;
 }
 
-    .navbar button {  
+    .navbar a {  
         margin:5px;
         position:center;
         display: block;
@@ -93,4 +93,58 @@ a, .btn-link {
         padding:0px;
     }
 
+.ratings {
+    text-align:end;
+    margin-top:5px;
+}
 
+.row #release-date {
+    margin-top: 10px;
+}
+
+.actor-image {
+    width: 140px;
+}
+
+ol {
+    margin-block-start:1em;
+    margin-block-end:1em;
+    margin-inline-end:0px;
+    margin-inline-start:0px;
+    padding-inline-start: 40px;
+}
+    ol.actors.scroller {
+        overflow-y:hidden;
+        overflow-x:scroll;
+        padding:0;
+
+
+    }
+
+ol.actors {
+    overflow:hidden;
+    display:flex;
+    position:relative;
+    list-style-position:inside;
+    list-style-type:none;
+}
+
+    ol.actors li {
+        width:140px;
+        min-width: 140px;
+    }
+
+        ol.actors li.card {
+            overflow: hidden;
+        }
+
+        ol.actors li.card a {
+            overflow: hidden;
+            color: black;
+            text-decoration:none;
+            text-align:center; 
+        }
+
+            ol.actors li.card h6 {
+                margin-top:10px;
+            }
