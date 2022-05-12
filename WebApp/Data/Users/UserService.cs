@@ -6,8 +6,14 @@ namespace WebApp.Data.Users
 {
     public class UserService : IUserService
     {
-        //string url = "http://webapi-sep6-dev.us-east-1.elasticbeanstalk.com/user";
+#if DEBUG
         string url = "https://localhost:7176/api/user";
+#else
+       
+        string url = "http://webapi-sep6-dev.us-east-1.elasticbeanstalk.com/user";
+#endif
+
+
         HttpClient client;
 
         private int userId;
