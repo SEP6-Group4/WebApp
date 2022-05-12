@@ -10,6 +10,8 @@ namespace WebApp.Data.Users
         string url = "https://localhost:7176/api/user";
         HttpClient client;
 
+        private int userId;
+
         public UserService()
         {
             client = new HttpClient();
@@ -17,14 +19,11 @@ namespace WebApp.Data.Users
 
         public async Task<User> ValidateUser(string email, string password)
         {
-            Console.WriteLine("Validating with API...");
             string message = await client.GetStringAsync($"{url}/validate?email={email}&password={password}");
             Console.WriteLine("Response received");
             try
             {
-                Console.WriteLine("Deserializing...");
                 User result = JsonSerializer.Deserialize<User>(message);
-                Console.WriteLine("Deserialization complete");
                 return result;
             }
             catch (Exception ex)
@@ -32,34 +31,16 @@ namespace WebApp.Data.Users
                 Console.WriteLine(ex.StackTrace);
                 return null;
             }
+        }
 
-            /*
-            Console.WriteLine("Validating...");
-            string userAsJson = JsonSerializer.Serialize(new User { Email = email, Password = password });
-            var request = new HttpRequestMessage
-            {
-                Method = HttpMethod.Get,
-                RequestUri = new Uri(url + "/validate"),
-                Content = new StringContent(userAsJson, Encoding.UTF8, "application/json")
-            };
-            
-            var response = await client.SendAsync(request);
-            Console.WriteLine("Got response");
+        public void SetUserId(int id)
+        {
+            userId = id;
+        }
 
-            try
-            {
-                Console.WriteLine("Deserializing...");
-                var responseData = await response.Content.ReadAsStringAsync();
-                User result = JsonSerializer.Deserialize<User>(responseData);
-                Console.WriteLine("Deserialization success");
-                return result;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.StackTrace);
-                return null;
-            }
-            */
+        public int GetUserId()
+        {
+            return userId;
         }
     }
 }
