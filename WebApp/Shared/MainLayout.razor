@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager NavigationManager
+@inherits LayoutComponentBase
 
 <div class="page">
     <div class="sidebar">
@@ -15,3 +17,21 @@
         </article>
     </main>
 </div>
+
+@code{
+
+    [CascadingParameter] 
+    protected Task<AuthenticationState> AuthStat { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        var authState = await AuthStat;
+        var user = authState.User;
+
+        if (!user.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo($"/");
+        }
+    }
+}

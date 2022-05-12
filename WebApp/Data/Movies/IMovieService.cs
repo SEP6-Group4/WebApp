@@ -9,5 +9,6 @@ namespace WebApp.Data.Movies
         Task<Credit> GetCreditsByMovieId(int movieId);
         void SetMovieId(int id);
         int GetMovieId();
+        Task<MovieList> GetMoviesBySearch(int page, string query);
     }
 }

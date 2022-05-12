@@ -5,8 +5,13 @@ namespace WebApp.Data.Movies
 {
     public class MovieService : IMovieService
     {
-        //string url = "http://webapi-sep6-dev.us-east-1.elasticbeanstalk.com/movie";
+#if DEBUG
         string url = "https://localhost:7176/movie";
+#else
+       
+        string url = "http://webapi-sep6-dev.us-east-1.elasticbeanstalk.com/movie";
+#endif
+       
         HttpClient client;
         private int movieId = 0;
 
@@ -29,6 +34,7 @@ namespace WebApp.Data.Movies
             return results;
         }
 
+
         public async Task<Credit> GetCreditsByMovieId(int movieId)
         {
             string message = await client.GetStringAsync(url + "/" + movieId + "/credits");
@@ -44,6 +50,12 @@ namespace WebApp.Data.Movies
         public void SetMovieId(int id)
         {
             movieId = id;
+
+        public async Task<MovieList> GetMoviesBySearch(int page, string query)
+        {
+            string message = await client.GetStringAsync(url + "/search?page=" + page + "&query=" + query);
+            MovieList results = JsonSerializer.Deserialize<MovieList>(message);
+            return results;
         }
     }
 }
