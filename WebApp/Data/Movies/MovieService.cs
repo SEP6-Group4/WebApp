@@ -50,7 +50,7 @@ namespace WebApp.Data.Movies
         public void SetMovieId(int id)
         {
             movieId = id;
-
+        }
         public async Task<MovieList> GetMoviesBySearch(int page, string query)
         {
             string message = await client.GetStringAsync(url + "/search?page=" + page + "&query=" + query);
