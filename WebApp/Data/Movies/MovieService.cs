@@ -27,5 +27,12 @@ namespace WebApp.Data.Movies
             MovieList results = JsonSerializer.Deserialize<MovieList>(message);
             return results;
         }
+
+        public async Task<MovieList> GetMoviesBySearch(int page, string query)
+        {
+            string message = await client.GetStringAsync(url + "/search?page=" + page + "&query=" + query);
+            MovieList results = JsonSerializer.Deserialize<MovieList>(message);
+            return results;
+        }
     }
 }
