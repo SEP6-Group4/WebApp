@@ -5,8 +5,8 @@ namespace WebApp.Data.Movies
 {
     public class MovieService : IMovieService
     {
-        //string url = "http://webapi-sep6-dev.us-east-1.elasticbeanstalk.com/movie";
-        string url = "https://localhost:7176/movie";
+        string url = "http://webapi-sep6-dev.us-east-1.elasticbeanstalk.com/movie";
+        //string url = "https://localhost:7176/movie";
         HttpClient client;
 
         public MovieService()
