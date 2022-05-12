@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace WebApp.Models
 {
@@ -13,6 +14,7 @@ namespace WebApp.Models
         [JsonPropertyName("Birthday")]
         public DateTime? Birthday { get; set; }
         [JsonPropertyName("Email")]
+        [EmailAddress]
         public string? Email { get; set; }
         [JsonPropertyName("Country")]
         public string? Country { get; set; }

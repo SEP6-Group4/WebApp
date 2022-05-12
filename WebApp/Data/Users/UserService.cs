@@ -42,5 +42,18 @@ namespace WebApp.Data.Users
         {
             return userId;
         }
+
+        public async Task CreateAccount(User user)
+        {
+            string userSerialized = JsonSerializer.Serialize(user);
+
+            HttpContent content = new StringContent(
+                userSerialized,
+                Encoding.UTF8,
+                "application/json"
+                );
+
+            await client.PostAsync($"{url}/createAccount", content);
+        }
     }
 }
