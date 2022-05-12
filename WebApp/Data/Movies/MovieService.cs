@@ -5,7 +5,6 @@ namespace WebApp.Data.Movies
 {
     public class MovieService : IMovieService
     {
-
 #if DEBUG
         string url = "https://localhost:7176/movie";
 #else
@@ -14,6 +13,7 @@ namespace WebApp.Data.Movies
 #endif
        
         HttpClient client;
+        private int movieId = 0;
 
         public MovieService()
         {
@@ -33,6 +33,23 @@ namespace WebApp.Data.Movies
             MovieList results = JsonSerializer.Deserialize<MovieList>(message);
             return results;
         }
+
+
+        public async Task<Credit> GetCreditsByMovieId(int movieId)
+        {
+            string message = await client.GetStringAsync(url + "/" + movieId + "/credits");
+            Credit result = JsonSerializer.Deserialize<Credit>(message);
+            return result;
+        }
+
+        public int GetMovieId()
+        {
+            return movieId;
+        }
+
+        public void SetMovieId(int id)
+        {
+            movieId = id;
 
         public async Task<MovieList> GetMoviesBySearch(int page, string query)
         {

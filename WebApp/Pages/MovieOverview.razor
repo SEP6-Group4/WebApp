@@ -1,0 +1,121 @@
+﻿@page "/MovieOverview"
+@using WebApp.Data.Movies
+@using WebApp.Models
+@inject IMovieService MovieService
+
+@if (movie == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <div class="container">
+             <div class="card">
+                 <div class="card-body"> 
+                     <div class="row">
+                        <div class="col-md-4">
+                           <img class="movie-image card-img" src="http://image.tmdb.org/t/p/w500/@movie.poster_path">
+                           <div class="row">
+                               <div class="col-md-7" id="release-date">
+                                    <h6>@movie.release_date</h6>
+                               </div>
+                               <div class="ratings col-md-5">
+                                @switch(averageRating)
+                                {
+                                    case 1:
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star"></i>
+                                        <i class="bi bi-star"></i>
+                                        <i class="bi bi-star"></i>
+                                        <i class="bi bi-star"></i>
+                                        break;
+                                    case 2:
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star"></i>
+                                        <i class="bi bi-star"></i>
+                                        <i class="bi bi-star"></i>
+                                        break;
+                                    case 3:
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star"></i>
+                                        <i class="bi bi-star"></i>
+                                        break;
+                                    case 4:
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star"></i>
+                                        break;
+                                   case 5:
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        <i class="bi bi-star-fill"></i>
+                                        break;
+                                }                                             
+                            </div>
+                           </div>
+                           
+                           
+                        </div>
+                        <div class="col-md-8">
+                            <div>
+                                <h2>@movie.title <a href="/MovieOverview" title="Add to favourite list" style="text-decoration:none;"><i class="bi bi-bookmark-heart-fill"></i></a></h2> <br>
+                                <h4>Overview</h4>
+                                <p class="title">@movie.overview</p> 
+                            </div> <br> <br>
+                            <div class ="col-md-12">
+                                <h4>Actors</h4>
+                                <ol class="actors scroller">
+                                    @foreach(Actor actor in credit.Actors)
+                                    {
+                                        <li class="card">
+                                            <a href="/MovieOverview">
+                                               <img class="actor-image" src="http://image.tmdb.org/t/p/w500/@actor.ProfilePath">    
+                                               <h6>@actor.OriginalName</h6>
+                                            </a>
+                                        </li>
+                                    }
+                                 </ol>
+                            </div>
+                        </div>
+                      </div>
+                      <span id="rateMe3"  class="rating-faces"></span>
+              </div>                
+           </div>
+    </div>
+}
+
+
+@code {
+    private Movie movie = new Movie();
+    private int averageRating;
+    private Credit credit = new Credit();
+
+    protected override async Task OnInitializedAsync()
+    {
+        movie = await GetMovie(MovieService.GetMovieId());
+        credit = await GetCreditsByMovie(MovieService.GetMovieId());
+        averageRating = (int)movie.vote_average/2;
+
+    }
+
+    private async Task<Movie> GetMovie(int id)
+    {
+        var result = await MovieService.GetMovieByID(id);
+        return result;
+    }
+
+     private async Task<Credit> GetCreditsByMovie(int id)
+    {
+        var result = await MovieService.GetCreditsByMovieId(id);
+        return result;
+    }
+}
