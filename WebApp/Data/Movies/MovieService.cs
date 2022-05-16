@@ -27,9 +27,30 @@ namespace WebApp.Data.Movies
             return result;
         }
 
-        public async Task<MovieList> GetMovies(int page)
+        public async Task<MovieList> GetMoviesByRatingDesc(int page)
         {
-            string message = await client.GetStringAsync(url + "?page=" + page);
+            string message = await client.GetStringAsync(url + "/ByRatingDesc?page=" + page);
+            MovieList results = JsonSerializer.Deserialize<MovieList>(message);
+            return results;
+        }
+
+        public async Task<MovieList> GetMoviesByRatingAsc(int page)
+        {
+            string message = await client.GetStringAsync(url + "/ByRatingAsc?page=" + page);
+            MovieList results = JsonSerializer.Deserialize<MovieList>(message);
+            return results;
+        }
+
+        public async Task<MovieList> GetMoviesByTitleAsc(int page)
+        {
+            string message = await client.GetStringAsync(url + "/ByTitleAsc?page=" + page);
+            MovieList results = JsonSerializer.Deserialize<MovieList>(message);
+            return results;
+        }
+
+        public async Task<MovieList> GetMoviesByTitleDesc(int page)
+        {
+            string message = await client.GetStringAsync(url + "/ByTitleDesc?page=" + page);
             MovieList results = JsonSerializer.Deserialize<MovieList>(message);
             return results;
         }
