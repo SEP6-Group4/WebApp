@@ -63,7 +63,7 @@ else
 
     private async Task<MovieList> GetMovies(int page)
     {
-        var result = await MovieService.GetMovies(page);
+        var result = await MovieService.GetMoviesByRatingDesc(page);
         return result;
     }
 
@@ -74,7 +74,6 @@ else
             currentPage = movieList.CurrentPage + 1;
             movieList = await GetMovies(currentPage);
         }
-
     }
 
     protected async Task PreviousPage()
