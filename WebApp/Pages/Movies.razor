@@ -2,6 +2,7 @@
 @using WebApp.Data.Movies
 @using WebApp.Models
 @inject IMovieService MovieService
+@inject NavigationManager uriHelper;
 
 @if (movieList.movies == null)
 {
@@ -15,50 +16,62 @@ else if (!movieList.movies.Any())
         <em>No movie exist. </em>
     </p>
 }
-else 
+else
 {
     <div class="container">
-               <div class="row">
-                  <div class="form-outline col-md-8">
-                    <input type="search" placeholder="Search" class="form-control" maxlength="150" />
-                  </div>
-                  <button class="btn btn-primary col-md-1">
-                   <i class="bi bi-search"></i>
-                  </button>
-               </div>
         <div class="row">
-             @foreach (var m in movieList.movies)
-             {
-              <div class="col-md-2 card">
-                <div class="card-body">                   
-                    <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
-                       <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">                               
-                    </a>
+            <div class="form-outline col-md-8">
+                <input type="search" placeholder="Search" class="form-control" maxlength="150" />
+            </div>
+            <button class="btn btn-primary col-md-1">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+        <select class="btn btn-light" style="width:100px;" @onchange="@HandleChange">
+            <option disabled hidden>Sorting by...</option>
+            <option value="RatingDesc">Rating High->Low</option>
+            <option value="RatingAsc">Rating Low->High</option>
+            <option value="TitleAsc">Title A->Z</option>
+            <option value="TitleDesc">Title Z->A</option>
+        </select>
+        <div class="row">
+            @foreach (var m in movieList.movies)
+            {
+                <div class="col-md-2 card">
+                    <div class="card-body">
+                        <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                            <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
+                        </a>
+                    </div>
+                    <div>
+                        <h5 class="title"><a> @m.title</a></h5>
+                        <p>@m.release_date</p>
+                    </div>
                 </div>
-                <div>
-                    <h5 class="title"><a> @m.title</a></h5>
-                    <p>@m.release_date</p>
-                </div>
-              </div>
-             }
+            }
         </div>
 
         <div class="navbar align-content-center">
-            <a href="/Movies" class="btn btn-white" @onclick="FirstPage" title="First Page" ><i class="bi bi-chevron-double-left"></i> </a>
-            <a href="/Movies" class="btn btn-white" @onclick="PreviousPage" title="Previous Page" > <i class="bi bi-arrow-left-square"></i> </a>
-                <span>Page @movieList.CurrentPage of @movieList.TotalPage </span>
-            <a href="/Movies" class="btn btn-white" @onclick="NextPage" title="Next Page" ><i class="bi bi-arrow-right-square"></i> </a>
-            <a href="/Movies" class="btn btn-white" @onclick="LastPage" title="Last Page" ><i class="bi bi-chevron-double-right"></i> </a>
+            <a href="/Movies" class="btn btn-white" @onclick="FirstPage" title="First Page"><i class="bi bi-chevron-double-left"></i> </a>
+            <a href="/Movies" class="btn btn-white" @onclick="PreviousPage" title="Previous Page"> <i class="bi bi-arrow-left-square"></i> </a>
+            <span>Page @movieList.CurrentPage of @movieList.TotalPage </span>
+            <a href="/Movies" class="btn btn-white" @onclick="NextPage" title="Next Page"><i class="bi bi-arrow-right-square"></i> </a>
+            <a href="/Movies" class="btn btn-white" @onclick="LastPage" title="Last Page"><i class="bi bi-chevron-double-right"></i> </a>
         </div>
     </div>
 }
 @code {
     private MovieList movieList = new MovieList();
     private int currentPage = 1;
+    public string Sorting = "TopRated";
+    private bool dropDownSelect = false;
 
     protected override async Task OnInitializedAsync()
     {
-        movieList = await GetMovies(currentPage);
+        if (!dropDownSelect)
+        {
+            movieList = await GetMovies(currentPage);
+        }
     }
 
     private async Task<MovieList> GetMovies(int page)
@@ -79,7 +92,7 @@ else
     protected async Task PreviousPage()
     {
         if (currentPage > 1)
-        {         
+        {
             currentPage = movieList.CurrentPage - 1;
             movieList = await GetMovies(currentPage);
         }
@@ -90,7 +103,7 @@ else
         if (currentPage != 1)
         {
             currentPage = 1;
-            movieList = await GetMovies(currentPage);   
+            movieList = await GetMovies(currentPage);
         }
     }
 
@@ -99,12 +112,34 @@ else
         if (currentPage != movieList.TotalPage)
         {
             currentPage = movieList.TotalPage;
-            movieList = await GetMovies(movieList.TotalPage);   
+            movieList = await GetMovies(movieList.TotalPage);
         }
     }
 
-     public async Task MovieSelected(int id)
+    public async Task MovieSelected(int id)
     {
         MovieService.SetMovieId(id);
+    }
+
+    public async void HandleChange(ChangeEventArgs e)
+    {
+        if (e.Value.Equals("RatingDesc"))
+        {
+            movieList = await MovieService.GetMoviesByRatingDesc(1);
+        }
+        else if (e.Value.Equals("RatingAsc"))
+        {
+            movieList = await MovieService.GetMoviesByRatingAsc(1);
+        }
+        else if (e.Value.Equals("TitleAsc"))
+        {
+            movieList = await MovieService.GetMoviesByTitleAsc(1);
+        }
+        else if (e.Value.Equals("TitleDesc"))
+        {
+            movieList = await MovieService.GetMoviesByTitleDesc(1);
+        }
+        dropDownSelect = true;
+        await InvokeAsync(StateHasChanged);
     }
 }
