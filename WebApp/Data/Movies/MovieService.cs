@@ -9,9 +9,9 @@ namespace WebApp.Data.Movies
         string url = "https://localhost:7176/movie";
 #else
        
-        string url = "http://webapi-sep6-dev.us-east-1.elasticbeanstalk.com/movie";
+        string url = "http://moviewebapi-dev.us-east-1.elasticbeanstalk.com/movie";
 #endif
-       
+
         HttpClient client;
         private int movieId = 0;
 

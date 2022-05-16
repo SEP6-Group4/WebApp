@@ -1,11 +1,11 @@
 
 {
     "region" : "us-east-1",
-    "configuration" : "Debug",
+    "configuration" : "Release",
     "framework"     : "net6.0",
     "self-contained" : true,
-    "application"    : "WebApp",
-    "environment"    : "WebApp-dev",
+    "application"    : "MovieWebApp",
+    "environment"    : "MovieWebApp-dev",
     "app-path"       : "/",
     "iis-website"    : "Default Web Site",
     "enable-xray"    : false,
@@ -13,8 +13,8 @@
     "additional-options"   : "",
     "solution-stack"       : "64bit Windows Server Core 2019 v2.9.1 running IIS 10.0",
     "environment-type"     : "SingleInstance",
-    "cname"                : "webapp-dev",
-    "instance-type"        : "t3a.micro",
+    "cname"                : "moviewebapp-dev",
+    "instance-type"        : "t2.micro",
     "key-pair"             : "",
     "instance-profile"     : "aws-elasticbeanstalk-ec2-role",
     "service-role"         : "aws-elasticbeanstalk-service-role"
