@@ -1,0 +1,101 @@
+﻿@page "/ActorOverview"
+@using WebApp.Data.Actors
+@using WebApp.Data.Movies
+@using WebApp.Models
+@inject IActorService ActorService
+@inject IMovieService MovieService
+
+@if (actor == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else
+{
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img class="movie-image card-img" src="http://image.tmdb.org/t/p/w500/@actor.ProfilePath">
+                        <div class="row">
+                            <div style="margin-left:40px;">
+                                <span class="fw-bold">Birthday </span> <br>
+                                <span>@actor.Birthday</span><br>
+                                <span class="fw-bold">Place of birth</span><br>
+                                <span>@actor.place_of_birth</span>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="col-md-8">
+                        <div>
+                            <h2>@actor.Name <a href="/ActorOverview" title="Add to favourite list" style="text-decoration:none;"><i class="bi bi-bookmark-heart-fill"></i></a></h2> <br>
+                            <h4>Biography</h4>
+                            <p>@actor.Biography</p>
+                        </div> <br> <br>
+                        <div class="col-md-12">
+                            <h4>Known for</h4>
+                            <ol class="actors scroller">
+                                @foreach (Movie movie in @movies)
+                                {
+                                    @if (movie.poster_path != null)
+                                    {
+                                        <li class="card" style="border:none;">
+                                            <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(movie.id)">
+                                                <img class="actor-image" src="http://image.tmdb.org/t/p/w500/@movie.poster_path">
+                                            </a>
+
+                                            <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(movie.id)">
+                                                @movie.title
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+
+    private Actor actor = new Actor();
+    private int averageRating;
+    private MovieCredit credit = new MovieCredit();
+    private List<Movie> movies = new List<Movie>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        actor = await GetActor(ActorService.GetActorId());
+        credit = await GetMovieCreditsByActorId(ActorService.GetActorId());
+        averageRating = (int)actor.Popularity;
+        foreach (Movie movie in credit.Movies)
+        {
+                movies.Add(movie);
+        }
+    }
+
+    private async Task<Actor> GetActor(int id)
+    {
+        var result = await ActorService.GetActorByID(id);
+        return result;
+    }
+
+    private async Task<MovieCredit> GetMovieCreditsByActorId(int id)
+    {
+        var result = await ActorService.GetMovieCreditsByActorId(id);
+        return result;
+    }
+
+     public async Task MovieSelected(int id)
+    {
+        MovieService.SetMovieId(id);
+    }
+
+}

@@ -67,14 +67,24 @@ a, .btn-link {
 
 .movie-image {
     width: -webkit-fill-available;
+    border-radius: 10px;
+    margin: 10px;
+}
+
+.title {
+    text-align: center;
+    margin: 15px;
 }
 
 .container .row {
     justify-content: center;
 }
+
 .card {
     margin: 5px;
-    min-width:200px;
+    min-width: 200px;
+    border-radius: 10px;
+    padding: unset;
 }
 
 .navbar {
@@ -122,11 +132,11 @@ ol {
     }
 
 ol.actors {
-    overflow:hidden;
-    display:flex;
-    position:relative;
-    list-style-position:inside;
-    list-style-type:none;
+    overflow: hidden;
+    display: flex;
+    position: relative;
+    list-style-position: inside;
+    list-style-type: none;
 }
 
     ol.actors li {
@@ -136,6 +146,8 @@ ol.actors {
 
         ol.actors li.card {
             overflow: hidden;
+            border:none;
+            
         }
 
         ol.actors li.card a {
@@ -145,6 +157,7 @@ ol.actors {
             text-align:center; 
         }
 
-            ol.actors li.card h6 {
-                margin-top:10px;
+            ol.actors li.card img {
+                border-radius: 20px;
+                margin-bottom: 5px;
             }
