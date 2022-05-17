@@ -35,20 +35,21 @@ else
             <option value="TitleDesc">Title Z->A</option>
         </select>
         <div class="row">
-            @foreach (var m in movieList.movies)
-            {
-                <div class="col-md-2 card">
-                    <div class="card-body">
-                        <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
-                            <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
-                        </a>
-                    </div>
-                    <div>
-                        <h5 class="title"><a> @m.title</a></h5>
-                        <p>@m.release_date</p>
-                    </div>
+             @foreach (var m in movieList.movies)
+             {
+              <div class="col-md-2 card">
+                <div >                   
+                    <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                       <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">                               
+                    </a>
                 </div>
-            }
+                <div class="title">
+                    <h5 ><a> @m.title</a></h5>
+                    <p>@m.release_date <br>
+                    (@m.vote_average / 10)</p>
+                </div>
+              </div>
+             }
         </div>
 
         <div class="navbar align-content-center">
