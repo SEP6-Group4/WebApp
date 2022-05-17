@@ -25,6 +25,7 @@ else
                                 @switch (averageRating)
                                 {
                                     case 1:
+                                        <span>@averageRating / 5 </span>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star"></i>
                                         <i class="bi bi-star"></i>
@@ -32,6 +33,7 @@ else
                                         <i class="bi bi-star"></i>
                                         break;
                                     case 2:
+                                        <span>@averageRating / 5 </span>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star"></i>
@@ -39,6 +41,7 @@ else
                                         <i class="bi bi-star"></i>
                                         break;
                                     case 3:
+                                        <span>@averageRating / 5 </span>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
@@ -46,6 +49,7 @@ else
                                         <i class="bi bi-star"></i>
                                         break;
                                     case 4:
+                                        <span>@averageRating / 5 </span>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
@@ -53,6 +57,7 @@ else
                                         <i class="bi bi-star"></i>
                                         break;
                                     case 5:
+                                        <span>@averageRating / 5 </span>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
@@ -78,7 +83,15 @@ else
                                 {
                                     <li class="card">
                                         <a href="/MovieOverview">
-                                            <img class="actor-image" src="http://image.tmdb.org/t/p/w500/@actor.ProfilePath">
+                                            @if (@actor.ProfilePath != null)
+                                            {
+                                                <img class="actor-image" src="http://image.tmdb.org/t/p/w500/@actor.ProfilePath">
+                                            }
+                                            else
+                                            {
+                                               <img class="actor-image" src="/User_gray.png" style="margin-bottom:45px;"><br /><br />
+                                            }
+
                                             <h6>@actor.OriginalName</h6>
                                         </a>
                                     </li>
@@ -108,10 +121,7 @@ else
 
         foreach (Actor actor in credit.Actors)
         {
-            if (actor.ProfilePath != null)
-            {
                 actors.Add(actor);
-            }
         }
     }
 
