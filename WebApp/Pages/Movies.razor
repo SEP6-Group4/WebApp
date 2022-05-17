@@ -21,9 +21,9 @@ else
     <div class="container">
         <div class="row">
             <div class="form-outline col-md-8">
-                <input type="search" placeholder="Search" class="form-control" maxlength="150" />
+                <input type="search" placeholder="Search" class="form-control" maxlength="150" @bind-value="searchQuery" />
             </div>
-            <button class="btn btn-primary col-md-1">
+            <button class="btn btn-primary col-md-1" @onclick="GetMoviesBySearch">
                 <i class="bi bi-search"></i>
             </button>
         </div>
@@ -65,6 +65,7 @@ else
     private int currentPage = 1;
     public string Sorting = "TopRated";
     private bool dropDownSelect = false;
+    public string searchQuery = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -80,12 +81,24 @@ else
         return result;
     }
 
+    protected async Task GetMoviesBySearch()
+    {
+        movieList = await MovieService.GetMoviesBySearch(currentPage, searchQuery);
+    }
+
     protected async Task NextPage()
     {
         if (currentPage < movieList.TotalPage)
         {
             currentPage = movieList.CurrentPage + 1;
-            movieList = await GetMovies(currentPage);
+            if (searchQuery != "")
+            {
+                await GetMoviesBySearch();
+            }
+            else
+            {
+                movieList = await GetMovies(currentPage);
+            }
         }
     }
 
@@ -94,7 +107,14 @@ else
         if (currentPage > 1)
         {
             currentPage = movieList.CurrentPage - 1;
-            movieList = await GetMovies(currentPage);
+            if (searchQuery != "")
+            {
+                await GetMoviesBySearch();
+            }
+            else
+            {
+                movieList = await GetMovies(currentPage);
+            }
         }
     }
 
@@ -103,7 +123,14 @@ else
         if (currentPage != 1)
         {
             currentPage = 1;
-            movieList = await GetMovies(currentPage);
+            if (searchQuery != "")
+            {
+                await GetMoviesBySearch();
+            }
+            else
+            {
+                movieList = await GetMovies(currentPage);
+            }
         }
     }
 
@@ -112,7 +139,14 @@ else
         if (currentPage != movieList.TotalPage)
         {
             currentPage = movieList.TotalPage;
-            movieList = await GetMovies(movieList.TotalPage);
+            if (searchQuery != "")
+            {
+                await GetMoviesBySearch();
+            }
+            else
+            {
+                movieList = await GetMovies(currentPage);
+            }
         }
     }
 
