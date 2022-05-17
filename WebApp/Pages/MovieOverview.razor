@@ -79,7 +79,7 @@ else
                         <div class="col-md-12">
                             <h4>Actors</h4>
                             <ol class="actors scroller">
-                                @foreach (Actor actor in @credit.Actors)
+                                @foreach (Actor actor in @actors)
                                 {
                                     <li class="card">
                                         <a href="/MovieOverview">
@@ -118,6 +118,11 @@ else
         movie = await GetMovie(MovieService.GetMovieId());
         credit = await GetCreditsByMovie(MovieService.GetMovieId());
         averageRating = (int)movie.vote_average / 2;
+
+        foreach (Actor actor in credit.Actors)
+        {
+                actors.Add(actor);
+        }
     }
 
     private async Task<Movie> GetMovie(int id)
