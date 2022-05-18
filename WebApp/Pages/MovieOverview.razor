@@ -77,7 +77,24 @@ else
                     </div>
                     <div class="col-md-8">
                         <div>
-                            <h2>@movie.title <a href="/MovieOverview" title="Add to favourite list" @onclick="AddMovieToFavorites" style="text-decoration:none;"><i class="bi bi-bookmark-heart-fill" ></i></a></h2> <br>
+                            @if (isMovieFavorited)
+                            {
+                                <h2>
+                                    @movie.title
+                                    <AuthorizeView>
+                                        <a href="/MovieOverview" title="Remove from favourite list" @onclick="RemoveMovieFromFavorites" style="text-decoration:none;"><i class="bi bi-bookmark-x-fill"></i></a>
+                                    </AuthorizeView>
+                                </h2> <br>
+                            }
+                            else
+                            {
+                                <h2>
+                                    @movie.title
+                                    <AuthorizeView>
+                                        <a href="/MovieOverview" title="Add to favourite list" @onclick="AddMovieToFavorites" style="text-decoration:none;"><i class="bi bi-bookmark-heart-fill"></i></a>
+                                    </AuthorizeView>
+                                </h2> <br>
+                            }
                             <h4>Overview</h4>
                             <p class="title">@movie.overview</p>
                         </div> <br> <br>
@@ -121,12 +138,14 @@ else
     private int averageRating;
     private Credit credit = new Credit();
     private List<Actor> actors = new List<Actor>();
+    private bool isMovieFavorited = false;
 
     protected override async Task OnInitializedAsync()
     {
         movie = await GetMovie(MovieService.GetMovieId());
         credit = await GetCreditsByMovie(MovieService.GetMovieId());
         averageRating = (int)movie.vote_average / 2;
+        isMovieFavorited = await IsMovieFavorited();
 
         foreach (Actor actor in credit.Actors)
         {
@@ -148,6 +167,18 @@ else
 
     private async Task AddMovieToFavorites()
     {
+        isMovieFavorited = true;
         await FavoriteMovieService.AddFavoriteMovie(UserService.GetUserId(), MovieService.GetMovieId());
+    }
+
+    private async Task RemoveMovieFromFavorites()
+    {
+        isMovieFavorited = false;
+        await FavoriteMovieService.RemoveFavoriteMovieByID(UserService.GetUserId(), MovieService.GetMovieId());
+    }
+
+    private async Task<bool> IsMovieFavorited()
+    {
+        return await FavoriteMovieService.GetIsFavoriteMovieByID(UserService.GetUserId(), MovieService.GetMovieId());
     }
 }

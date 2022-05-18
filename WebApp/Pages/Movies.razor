@@ -1,7 +1,12 @@
 ﻿@page "/Movies"
+@using WebApp.Data.FavoriteMovie
 @using WebApp.Data.Movies
+@using WebApp.Data.Users
 @using WebApp.Models
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IMovieService MovieService
+@inject IFavoriteMovieService FavoriteMovieService
+@inject IUserService UserService
 @inject NavigationManager uriHelper;
 
 @if (movieList.movies == null)
@@ -34,6 +39,11 @@ else
             <option value="TitleAsc">Title A->Z</option>
             <option value="TitleDesc">Title Z->A</option>
         </select>
+        <AuthorizeView>
+            <button class="btn btn-primary col-md-1" @onclick="GetFavoriteMovies">
+                <i class="bi bi-search"></i>
+            </button>
+        </AuthorizeView>
         <div class="row">
             @foreach (var m in movieList.movies)
             {
@@ -83,6 +93,7 @@ else
 
     protected async Task GetMoviesBySearch()
     {
+        if (searchQuery == "") return;
         movieList = await MovieService.GetMoviesBySearch(currentPage, searchQuery);
     }
 
@@ -175,5 +186,10 @@ else
         }
         dropDownSelect = true;
         await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task GetFavoriteMovies()
+    {
+        movieList = await FavoriteMovieService.GetFavoriteMoviesByID(UserService.GetUserId());
     }
 }
