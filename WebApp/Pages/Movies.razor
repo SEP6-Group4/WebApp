@@ -19,21 +19,24 @@ else if (!movieList.movies.Any())
 else
 {
     <div class="container">
-        <div class="row">
-            <div class="form-outline col-md-8">
+        <div class="row filter">
+            <div class="col-md-3">
+               <select class="form-select" aria-label="Default select example"  @onchange="@HandleChange">
+                    <option disabled hidden>Sorting by...</option>
+                    <option value="RatingDesc">Rating High to Low</option>
+                    <option value="RatingAsc">Rating Low to High</option>
+                    <option value="TitleAsc">Title A to Z</option>
+                    <option value="TitleDesc">Title Z to A</option>
+                </select>
+            </div>            
+            <div class=" col-md-7">
                 <input type="search" placeholder="Search" class="form-control" maxlength="150" />
             </div>
-            <button class="btn btn-primary col-md-1">
-                <i class="bi bi-search"></i>
-            </button>
+               <button class="btn btn-primary">
+                    <i class="bi bi-search"></i>
+               </button>
         </div>
-        <select class="btn btn-light" style="width:100px;" @onchange="@HandleChange">
-            <option disabled hidden>Sorting by...</option>
-            <option value="RatingDesc">Rating High->Low</option>
-            <option value="RatingAsc">Rating Low->High</option>
-            <option value="TitleAsc">Title A->Z</option>
-            <option value="TitleDesc">Title Z->A</option>
-        </select>
+
         <div class="row">
              @foreach (var m in movieList.movies)
              {
