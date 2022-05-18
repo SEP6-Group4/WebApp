@@ -65,15 +65,49 @@ a, .btn-link {
     }
 
 
-.movie-image {
-    width: -webkit-fill-available;
-    border-radius: 10px;
-    margin: 10px;
+.navbar {
+    background-color: black;
+    overflow: hidden;
+    width: 100%;
+    justify-content:center;
+    padding:0;
+}
+
+    .navbar a {  
+        margin:5px;
+        position:center;
+        display: block;
+        color:  blueviolet;
+        font-size: 17px;
+        padding:0px;
+    }
+
+.top-row[b-c2wpa7m53j] {
+    background-color: black !important;
+}
+
+.nav-item:first-of-type[b-c2wpa7m53j] {
+    padding-top: 0rem !important;
+    margin-top: 0rem !important;
+}
+
+@media screen and (min-width: 641px) {
+    div .collapseNav {
+        display: none;
+    }
+}
+
+nav a i.bi {
+    margin: 10px !important;
 }
 
 .title {
     text-align: center;
     margin: 15px;
+}
+
+.container {
+    margin-top:1rem;
 }
 
 .container .row {
@@ -87,25 +121,16 @@ a, .btn-link {
     padding: unset;
 }
 
-.navbar {
-    background-color: #fff;
-    overflow: hidden;
-    width: 100%;
-    justify-content:center;
+.movie-image {
+    width: -webkit-fill-available;
+    border-radius: 10px;
+    margin: 10px;
 }
-
-    .navbar a {  
-        margin:5px;
-        position:center;
-        display: block;
-        color:  blueviolet;
-        font-size: 17px;
-        padding:0px;
-    }
 
 .ratings {
     text-align:end;
     margin-top:5px;
+    padding:0px;
 }
 
 .row #release-date {
