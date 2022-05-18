@@ -108,6 +108,7 @@ nav a i.bi {
 
 .container {
     margin-top:1rem;
+    min-width: 400px;
 }
 
 .container .row {
@@ -186,3 +187,33 @@ ol.actors {
                 border-radius: 20px;
                 margin-bottom: 5px;
             }
+
+/*Filter*/
+div .filter {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    width: -webkit-fill-available;
+}
+
+
+div .filter button {
+    width:3.5rem;
+    margin-right: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+    div .filter button {
+        margin-top: 1rem;
+        margin-right: 0rem;
+        width: -webkit-fill-available;
+        text-align: center;
+    }
+
+    div .col-md-7, div.col-md-3 {
+        padding: 0;
+        margin-right: 0rem;
+        margin-top: 1rem;
+        width: -webkit-fill-available;
+        text-align: center;
+    }
+}
