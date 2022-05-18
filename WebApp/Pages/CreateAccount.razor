@@ -36,8 +36,8 @@
                                         <InputText class="form-control" @bind-Value="newUser.Country" placeholder="Country" required />
                                     </div>
                                     <div class="col-md-6">
-                                       <label><i class="oi oi-calendar">  </i> Date Of Birth:</label> <br />
-                                        <InputDate @bind-Value="@_endDate" rows="1" />
+                                        <label><i class="oi oi-calendar">  </i> Date Of Birth:</label> <br />
+                                        <InputDate @bind-Value="@birthday" rows="1" />
                                     </div>
                                 </div>
 
@@ -55,7 +55,7 @@
                             </div>
 
                         </div>
-                        <div class="text-center" >
+                        <div class="text-center">
                             <button class="btn btn-outline-success btn-block text-uppercase" type="submit" style="margin-top: 1rem; margin-bottom: .5rem; ">Create</button>
                         </div>
                         <p class="text-center">Already have an account? <a class="btn btn-primary" href="Login">Log in</a> </p>
@@ -83,7 +83,7 @@
 
 @code {
     private User newUser = new User();
-    private DateTime _endDate = new DateTime();
+    private DateTime birthday = new DateTime();
 
     private string password;
     private string confirmPassword;
@@ -94,7 +94,41 @@
         if (password.Equals(confirmPassword))
         {
             newUser.Password = password;
-            newUser.Birthday = _endDate;
+            newUser.Birthday = birthday;
+
+            DateTime today = DateTime.Today;
+            int age = today.Year - birthday.Year;
+            if (birthday.Date > today.AddYears(-age))
+            {
+                age--;
+            }
+
+            newUser.Age = age;
+
+            if (age < 15)
+            {
+                newUser.AgeGroup = 1;
+            }
+            else if (age < 22)
+            {
+                newUser.AgeGroup = 2;
+            }
+            else if (age < 30)
+            {
+                newUser.AgeGroup = 3;
+            }
+            else if (age < 41)
+            {
+                newUser.AgeGroup = 4;
+            }
+            else if (age < 56)
+            {
+                newUser.AgeGroup = 5;
+            }
+            else
+            {
+                newUser.AgeGroup = 6;
+            }
 
             UsersService.CreateAccount(newUser);
             NavigationManager.NavigateTo("/login");
