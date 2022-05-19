@@ -1,9 +1,13 @@
 ﻿@page "/ActorOverview"
 @using WebApp.Data.Actors
 @using WebApp.Data.Movies
+@using WebApp.Data.FavouriteActor
+@using WebApp.Data.Users
 @using WebApp.Models
 @inject IActorService ActorService
 @inject IMovieService MovieService
+@inject IFavouriteActorService FavouriteActorService
+@inject IUserService UserService
 
 @if (actor == null)
 {
@@ -32,7 +36,23 @@ else
                     </div>
                     <div class="col-md-8">
                         <div>
-                            <h2>@actor.Name <a href="/ActorOverview" title="Add to favourite list" style="text-decoration:none;"><i class="bi bi-bookmark-heart-fill"></i></a></h2> <br>
+                            <h2>@actor.Name
+                                <AuthorizeView>
+                                @if (!isActorFavourite)
+                                {
+                                    <a href="/ActorOverview" title="Add to favourite list" style="text-decoration:none;" @onclick="() => AddActorToFavourite(UserService.GetUserId(), actor.Id) ">
+                                        <i class="bi bi-bookmark-x-fill"></i>
+                                    </a>
+                                }
+                                else if(isActorFavourite)
+                                {
+                                    <a href="/ActorOverview" title="Remove from favourite list" style="text-decoration:none;" @onclick="() => RemoveActorFromFavourite(UserService.GetUserId(), actor.Id)" >
+                                        <i class="bi bi-bookmark-heart-fill"></i>
+                                    </a>
+                                }
+                                </AuthorizeView>
+                                
+                             </h2> <br>
                             <h4>Biography</h4>
                             <p>@actor.Biography</p>
                         </div> <br> <br>
@@ -69,11 +89,19 @@ else
     private double averageMovieRatings;
     private MovieCredit credit = new MovieCredit();
     private List<Movie> movies = new List<Movie>();
+    private List<int> actorIds = new List<int>();
+    private bool isActorFavourite;
 
     protected override async Task OnInitializedAsync()
     {
         actor = await GetActor(ActorService.GetActorId());
         credit = await GetMovieCreditsByActorId(ActorService.GetActorId());
+        actorIds = await GetFavouriteActorIds(1);
+        if (actorIds.Contains(actor.Id))
+        {
+            isActorFavourite = true;
+        }
+
         foreach (Movie movie in credit.Movies)
         {
             movies.Add(movie);
@@ -94,9 +122,26 @@ else
         return result;
     }
 
-     public async Task MovieSelected(int id)
+    private async Task MovieSelected(int id)
     {
         MovieService.SetMovieId(id);
     }
 
+    private async Task AddActorToFavourite(int userId, int actorId)
+    {
+        await FavouriteActorService.AddActorToFavourite(userId, actorId);
+        isActorFavourite = true;
+    }
+
+    private async Task RemoveActorFromFavourite(int userId, int actorId)
+    {
+        await FavouriteActorService.RemoveActorFromFavourite(userId, actorId);
+        isActorFavourite = false;
+    }
+
+    private async Task<List<int>> GetFavouriteActorIds(int userId)
+    {
+        actorIds = await FavouriteActorService.GetFavouriteActorIds(userId);
+        return actorIds;
+    }
 }
