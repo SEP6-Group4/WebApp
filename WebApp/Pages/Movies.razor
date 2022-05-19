@@ -1,7 +1,12 @@
 ﻿@page "/Movies"
+@using WebApp.Data.FavoriteMovie
 @using WebApp.Data.Movies
+@using WebApp.Data.Users
 @using WebApp.Models
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IMovieService MovieService
+@inject IFavoriteMovieService FavoriteMovieService
+@inject IUserService UserService
 @inject NavigationManager uriHelper;
 
 @if (movieList.movies == null)
@@ -23,6 +28,9 @@ else
             <div class="col-md-3">
                <select class="form-select" aria-label="Default select example"  @onchange="@HandleChange">
                     <option disabled hidden>Sorting by...</option>
+                    <AuthorizeView>
+                        <option value="Favorites">Your favorite movies</option>
+                    </AuthorizeView>
                     <option value="RatingDesc">Rating High to Low</option>
                     <option value="RatingAsc">Rating Low to High</option>
                     <option value="TitleAsc">Title A to Z</option>
@@ -30,9 +38,9 @@ else
                 </select>
             </div>            
             <div class=" col-md-7">
-                <input type="search" placeholder="Search" class="form-control" maxlength="150" />
+                <input type="search" @bind-value="searchQuery" placeholder="Search" class="form-control" maxlength="150" />
             </div>
-               <button class="btn btn-primary">
+               <button class="btn btn-primary" @onclick="GetMoviesBySearch">
                     <i class="bi bi-search"></i>
                </button>
         </div>
@@ -69,6 +77,7 @@ else
     private int currentPage = 1;
     public string Sorting = "TopRated";
     private bool dropDownSelect = false;
+    public string searchQuery = "";
 
     protected override async Task OnInitializedAsync()
     {
@@ -84,12 +93,25 @@ else
         return result;
     }
 
+    protected async Task GetMoviesBySearch()
+    {
+        if (searchQuery == "") return;
+        movieList = await MovieService.GetMoviesBySearch(currentPage, searchQuery);
+    }
+
     protected async Task NextPage()
     {
         if (currentPage < movieList.TotalPage)
         {
             currentPage = movieList.CurrentPage + 1;
-            movieList = await GetMovies(currentPage);
+            if (searchQuery != "")
+            {
+                await GetMoviesBySearch();
+            }
+            else
+            {
+                movieList = await GetMovies(currentPage);
+            }
         }
     }
 
@@ -98,7 +120,14 @@ else
         if (currentPage > 1)
         {
             currentPage = movieList.CurrentPage - 1;
-            movieList = await GetMovies(currentPage);
+            if (searchQuery != "")
+            {
+                await GetMoviesBySearch();
+            }
+            else
+            {
+                movieList = await GetMovies(currentPage);
+            }
         }
     }
 
@@ -107,7 +136,14 @@ else
         if (currentPage != 1)
         {
             currentPage = 1;
-            movieList = await GetMovies(currentPage);
+            if (searchQuery != "")
+            {
+                await GetMoviesBySearch();
+            }
+            else
+            {
+                movieList = await GetMovies(currentPage);
+            }
         }
     }
 
@@ -116,7 +152,14 @@ else
         if (currentPage != movieList.TotalPage)
         {
             currentPage = movieList.TotalPage;
-            movieList = await GetMovies(movieList.TotalPage);
+            if (searchQuery != "")
+            {
+                await GetMoviesBySearch();
+            }
+            else
+            {
+                movieList = await GetMovies(currentPage);
+            }
         }
     }
 
@@ -127,7 +170,11 @@ else
 
     public async void HandleChange(ChangeEventArgs e)
     {
-        if (e.Value.Equals("RatingDesc"))
+        if (e.Value.Equals("Favorites"))
+        {
+            movieList = await FavoriteMovieService.GetFavoriteMoviesByID(UserService.GetUserId());
+        }
+        else if (e.Value.Equals("RatingDesc"))
         {
             movieList = await MovieService.GetMoviesByRatingDesc(1);
         }
