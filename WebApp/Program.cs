@@ -5,6 +5,7 @@ using WebApp;
 using WebApp.Data.Actors;
 using WebApp.Data.Movies;
 using WebApp.Data.Users;
+using WebApp.Data.FavouriteActor;
 using WebApp.Models.Authentication;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -15,6 +16,7 @@ builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.
 builder.Services.AddSingleton<IMovieService, MovieService>();
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<IActorService, ActorService>();
+builder.Services.AddSingleton<IFavouriteActorService, FavouriteActorService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 
 builder.Services.AddAuthorizationCore(options =>
