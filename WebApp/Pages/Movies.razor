@@ -34,16 +34,15 @@ else
         </div>
         <select class="btn btn-light" style="width:100px;" @onchange="@HandleChange">
             <option disabled hidden>Sorting by...</option>
+            <AuthorizeView>
+                <option value="Favorites">Your favorite movies</option>
+            </AuthorizeView>
             <option value="RatingDesc">Rating High->Low</option>
             <option value="RatingAsc">Rating Low->High</option>
             <option value="TitleAsc">Title A->Z</option>
             <option value="TitleDesc">Title Z->A</option>
         </select>
-        <AuthorizeView>
-            <button class="btn btn-primary col-md-1" @onclick="GetFavoriteMovies">
-                <i class="bi bi-search"></i>
-            </button>
-        </AuthorizeView>
+
         <div class="row">
             @foreach (var m in movieList.movies)
             {
@@ -168,7 +167,11 @@ else
 
     public async void HandleChange(ChangeEventArgs e)
     {
-        if (e.Value.Equals("RatingDesc"))
+        if (e.Value.Equals("Favorites"))
+        {
+            movieList = await FavoriteMovieService.GetFavoriteMoviesByID(UserService.GetUserId());
+        }
+        else if (e.Value.Equals("RatingDesc"))
         {
             movieList = await MovieService.GetMoviesByRatingDesc(1);
         }
@@ -186,10 +189,5 @@ else
         }
         dropDownSelect = true;
         await InvokeAsync(StateHasChanged);
-    }
-
-    public async Task GetFavoriteMovies()
-    {
-        movieList = await FavoriteMovieService.GetFavoriteMoviesByID(UserService.GetUserId());
     }
 }
