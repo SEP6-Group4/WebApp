@@ -2,11 +2,13 @@
 @using WebApp.Data.FavoriteMovie
 @using WebApp.Data.Movies
 @using WebApp.Data.Users
+@using WebApp.Data.Actors
 @using WebApp.Models
 @using WebApp.Models.Authentication
 @inject IMovieService MovieService
 @inject IFavoriteMovieService FavoriteMovieService
 @inject IUserService UserService
+@inject IActorService ActorService
 
 @if (movie == null)
 {
@@ -23,14 +25,14 @@ else
                     <div class="col-md-4">
                         <img class="movie-image card-img" src="http://image.tmdb.org/t/p/w500/@movie.poster_path">
                         <div class="row">
-                            <div class="col-md-7" id="release-date">
+                            <div class="col-md-6" id="release-date">
                                 <h6>@movie.release_date</h6>
                             </div>
-                            <div class="ratings col-md-5">
+                            <div class="ratings col-md-6">
                                 @switch (averageRating)
                                 {
                                     case 1:
-                                        <span>@averageRating / 5 </span>
+                                        <span>(@movie.vote_average / 10)</span>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star"></i>
                                         <i class="bi bi-star"></i>
@@ -38,7 +40,7 @@ else
                                         <i class="bi bi-star"></i>
                                         break;
                                     case 2:
-                                        <span>@averageRating / 5 </span>
+                                        <span>(@movie.vote_average / 10)</span>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star"></i>
@@ -46,7 +48,7 @@ else
                                         <i class="bi bi-star"></i>
                                         break;
                                     case 3:
-                                        <span>@averageRating / 5 </span>
+                                        <span>(@movie.vote_average / 10)</span>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
@@ -54,7 +56,7 @@ else
                                         <i class="bi bi-star"></i>
                                         break;
                                     case 4:
-                                        <span>@averageRating / 5 </span>
+                                       <span>(@movie.vote_average / 10)</span>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
@@ -62,7 +64,7 @@ else
                                         <i class="bi bi-star"></i>
                                         break;
                                     case 5:
-                                        <span>@averageRating / 5 </span>
+                                        <span>(@movie.vote_average / 10)</span>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
@@ -96,7 +98,7 @@ else
                                 </h2> <br>
                             }
                             <h4>Overview</h4>
-                            <p class="title">@movie.overview</p>
+                            <p>@movie.overview</p>
                         </div> <br> <br>
                         <div class="col-md-12">
                             <h4>Actors</h4>
@@ -104,7 +106,7 @@ else
                                 @foreach (Actor actor in @actors)
                                 {
                                     <li class="card">
-                                        <a href="/MovieOverview">
+                                        <a href="/ActorOverview" class="card-img" @onclick="() => ActorSelected(actor.Id)">
                                             @if (@actor.ProfilePath != null)
                                             {
                                                 <img class="actor-image" src="http://image.tmdb.org/t/p/w500/@actor.ProfilePath">
@@ -117,7 +119,6 @@ else
 
                                                 <br />
                                             }
-
                                             <h6>@actor.OriginalName</h6>
                                         </a>
                                     </li>
@@ -126,7 +127,6 @@ else
                         </div>
                     </div>
                 </div>
-                <span id="rateMe3" class="rating-faces"></span>
             </div>
         </div>
     </div>
@@ -180,5 +180,10 @@ else
     private async Task<bool> IsMovieFavorited()
     {
         return await FavoriteMovieService.GetIsFavoriteMovieByID(UserService.GetUserId(), MovieService.GetMovieId());
+    }
+      
+   public async Task ActorSelected(int id)
+    {
+        ActorService.SetActorId(id);
     }
 }

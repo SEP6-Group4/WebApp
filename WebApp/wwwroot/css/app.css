@@ -65,23 +65,12 @@ a, .btn-link {
     }
 
 
-.movie-image {
-    width: -webkit-fill-available;
-}
-
-.container .row {
-    justify-content: center;
-}
-.card {
-    margin: 5px;
-    min-width:200px;
-}
-
 .navbar {
-    background-color: #fff;
+    background-color: black;
     overflow: hidden;
     width: 100%;
     justify-content:center;
+    padding:0;
 }
 
     .navbar a {  
@@ -93,9 +82,56 @@ a, .btn-link {
         padding:0px;
     }
 
+.top-row[b-c2wpa7m53j] {
+    background-color: black !important;
+}
+
+.nav-item:first-of-type[b-c2wpa7m53j] {
+    padding-top: 0rem !important;
+    margin-top: 0rem !important;
+}
+
+@media screen and (min-width: 641px) {
+    div .collapseNav {
+        display: none;
+    }
+}
+
+nav a i.bi {
+    margin: 10px !important;
+}
+
+.title {
+    text-align: center;
+    margin: 15px;
+}
+
+.container {
+    margin-top:1rem;
+    min-width: 400px;
+}
+
+.container .row {
+    justify-content: center;
+}
+
+.card {
+    margin: 5px;
+    min-width: 200px;
+    border-radius: 10px;
+    padding: unset;
+}
+
+.movie-image {
+    width: -webkit-fill-available;
+    border-radius: 10px;
+    margin: 10px;
+}
+
 .ratings {
     text-align:end;
     margin-top:5px;
+    padding:0px;
 }
 
 .row #release-date {
@@ -122,11 +158,11 @@ ol {
     }
 
 ol.actors {
-    overflow:hidden;
-    display:flex;
-    position:relative;
-    list-style-position:inside;
-    list-style-type:none;
+    overflow: hidden;
+    display: flex;
+    position: relative;
+    list-style-position: inside;
+    list-style-type: none;
 }
 
     ol.actors li {
@@ -136,6 +172,8 @@ ol.actors {
 
         ol.actors li.card {
             overflow: hidden;
+            border:none;
+            
         }
 
         ol.actors li.card a {
@@ -145,6 +183,37 @@ ol.actors {
             text-align:center; 
         }
 
-            ol.actors li.card h6 {
-                margin-top:10px;
+            ol.actors li.card img {
+                border-radius: 20px;
+                margin-bottom: 5px;
             }
+
+/*Filter*/
+div .filter {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    width: -webkit-fill-available;
+}
+
+
+div .filter button {
+    width:3.5rem;
+    margin-right: 1rem;
+}
+
+@media screen and (max-width: 768px) {
+    div .filter button {
+        margin-top: 1rem;
+        margin-right: 0rem;
+        width: -webkit-fill-available;
+        text-align: center;
+    }
+
+    div .col-md-7, div.col-md-3 {
+        padding: 0;
+        margin-right: 0rem;
+        margin-top: 1rem;
+        width: -webkit-fill-available;
+        text-align: center;
+    }
+}

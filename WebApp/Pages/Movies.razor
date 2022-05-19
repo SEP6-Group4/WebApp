@@ -24,43 +24,46 @@ else if (!movieList.movies.Any())
 else
 {
     <div class="container">
-        <div class="row">
-            <div class="form-outline col-md-8">
-                <input type="search" placeholder="Search" class="form-control" maxlength="150" @bind-value="searchQuery" />
+        <div class="row filter">
+            <div class="col-md-3">
+               <select class="form-select" aria-label="Default select example"  @onchange="@HandleChange">
+                    <option disabled hidden>Sorting by...</option>
+                    <AuthorizeView>
+                        <option value="Favorites">Your favorite movies</option>
+                    </AuthorizeView>
+                    <option value="RatingDesc">Rating High to Low</option>
+                    <option value="RatingAsc">Rating Low to High</option>
+                    <option value="TitleAsc">Title A to Z</option>
+                    <option value="TitleDesc">Title Z to A</option>
+                </select>
+            </div>            
+            <div class=" col-md-7">
+                <input type="search" @bind-value="searchQuery" placeholder="Search" class="form-control" maxlength="150" />
             </div>
-            <button class="btn btn-primary col-md-1" @onclick="GetMoviesBySearch">
-                <i class="bi bi-search"></i>
-            </button>
+               <button class="btn btn-primary" @onclick="GetMoviesBySearch">
+                    <i class="bi bi-search"></i>
+               </button>
         </div>
-        <select class="btn btn-light" style="width:100px;" @onchange="@HandleChange">
-            <option disabled hidden>Sorting by...</option>
-            <AuthorizeView>
-                <option value="Favorites">Your favorite movies</option>
-            </AuthorizeView>
-            <option value="RatingDesc">Rating High->Low</option>
-            <option value="RatingAsc">Rating Low->High</option>
-            <option value="TitleAsc">Title A->Z</option>
-            <option value="TitleDesc">Title Z->A</option>
-        </select>
 
         <div class="row">
-            @foreach (var m in movieList.movies)
-            {
-                <div class="col-md-2 card">
-                    <div class="card-body">
-                        <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
-                            <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
-                        </a>
-                    </div>
-                    <div>
-                        <h5 class="title"><a> @m.title</a></h5>
-                        <p>@m.release_date</p>
-                    </div>
+             @foreach (var m in movieList.movies)
+             {
+              <div class="col-md-2 card">
+                <div >                   
+                    <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                       <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">                               
+                    </a>
                 </div>
-            }
+                <div class="title">
+                    <h5 ><a> @m.title</a></h5>
+                    <p>@m.release_date <br>
+                    (@m.vote_average / 10)</p>
+                </div>
+              </div>
+             }
         </div>
 
-        <div class="navbar align-content-center">
+        <div class="align-content-center" style="text-align:center">
             <a href="/Movies" class="btn btn-white" @onclick="FirstPage" title="First Page"><i class="bi bi-chevron-double-left"></i> </a>
             <a href="/Movies" class="btn btn-white" @onclick="PreviousPage" title="Previous Page"> <i class="bi bi-arrow-left-square"></i> </a>
             <span>Page @movieList.CurrentPage of @movieList.TotalPage </span>
