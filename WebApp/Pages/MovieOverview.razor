@@ -84,7 +84,7 @@ else
                                 <h2>
                                     @movie.title
                                     <AuthorizeView>
-                                        <a href="/MovieOverview" title="Remove from favourite list" @onclick="RemoveMovieFromFavorites" style="text-decoration:none;"><i class="bi bi-bookmark-x-fill"></i></a>
+                                        <a href="/MovieOverview" title="Remove from favourite list" @onclick="RemoveMovieFromFavorites" style="text-decoration:none;"><i class="bi bi-heart-fill"></i></a>
                                     </AuthorizeView>
                                 </h2> <br>
                             }
@@ -93,7 +93,7 @@ else
                                 <h2>
                                     @movie.title
                                     <AuthorizeView>
-                                        <a href="/MovieOverview" title="Add to favourite list" @onclick="AddMovieToFavorites" style="text-decoration:none;"><i class="bi bi-bookmark-heart-fill"></i></a>
+                                        <a href="/MovieOverview" title="Add to favourite list" @onclick="AddMovieToFavorites" style="text-decoration:none;"><i class="bi bi-heart"></i></a>
                                     </AuthorizeView>
                                 </h2> <br>
                             }

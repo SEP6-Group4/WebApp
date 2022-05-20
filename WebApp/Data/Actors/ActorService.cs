@@ -43,5 +43,19 @@ namespace WebApp.Data.Actors
         {
             actorId = id;
         }
+
+        public async Task<ActorList> GetPopularActors(int page)
+        {
+            string message = await client.GetStringAsync(url + "/" + "popularActors?page=" + page);
+            ActorList result = JsonSerializer.Deserialize<ActorList>(message);
+            return result;
+        }
+
+        public async Task<ActorList> GetActorsBySearch(int page, string query)
+        {
+            string message = await client.GetStringAsync(url + "/search?page=" + page + "&query=" + query);
+            ActorList results = JsonSerializer.Deserialize<ActorList>(message);
+            return results;
+        }
     }
 }

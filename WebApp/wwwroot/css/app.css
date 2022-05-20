@@ -217,3 +217,11 @@ div .filter button {
         text-align: center;
     }
 }
+
+.form-label-group, .form-label-group label{
+    margin-top: 1rem;
+}
+    .form-label-group button {
+        width: -webkit-fill-available;
+        margin-top: 1rem;
+    }

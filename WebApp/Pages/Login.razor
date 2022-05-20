@@ -1,5 +1,4 @@
 ﻿@page "/login"
-@namespace LoginComponent
 
 @using Microsoft.AspNetCore.Components.Authorization
 @using WebApp.Data.Users;
@@ -11,28 +10,28 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
 
-<AuthorizeView>
-    <NotAuthorized>
         <div class="container">
             <div class="row">
                 <div class=" mx-auto">
 
                     <h5 class="card-title text-center">Login</h5>
                     <form class="form-login">
-                        <div class="form-label-group">
-                            <label class="oi oi-person">  Email</label>
-                            <input type="email" class="form-control" placeholder="Email" @bind-value="email" required>
-                        </div>
-                        <div class="form-label-group">
-                            <label class="oi oi-lock-locked"> Password</label>
-                            <input type="password" class="form-control" placeholder="Password" @bind-value="password" required>
-                        </div>
-
+                            <div class="form-label-group">
+                                <label class="oi oi-person">  Email</label>
+                                <input type="email" class="form-control" placeholder="Email" @bind-value="email" required>
+                            </div>
+                            <div class="form-label-group">
+                                <label class="oi oi-lock-locked"> Password</label>
+                                <input type="password" class="form-control" placeholder="Password" @bind-value="password" required>
+                            </div>
+                             <div class="form-label-group">
+                                <button class="btn btn-outline-success btn-block text-uppercase" type="submit" @onclick="PerformLogin">Log in</button>
+                             </div>
+                             <div class="form-label-group">
+                                <p class="text-center">Don't have an account? <a class="btn btn-primary" href="CreateAccount">Sign up</a> </p>
+                            </div>
                     </form>
-                    <div class="form-label-group">
-                        <button class="btn btn-outline-success btn-block text-uppercase" type="submit" @onclick="PerformLogin">Login</button>
-                        <p class="text-center">Don't have an account? <a class="btn btn-primary" href="Register">Sign up</a> </p>
-                    </div>
+
                     @if (!string.IsNullOrWhiteSpace(errorMessage))
                     {
                         <div class="alert alert-danger">
@@ -42,19 +41,6 @@
                 </div>
             </div>
         </div>
-    </NotAuthorized>
-    <Authorized>
-        <div class="container">
-            <div class="row">
-                <div class=" mx-auto">
-                    <button class="btn btn-outline-danger btn-block" href="" @onclick="PerformLogout">
-                        Log out
-                    </button>
-                </div>
-            </div>
-        </div>
-    </Authorized>
-</AuthorizeView>
 
 
 @code {
@@ -62,6 +48,7 @@
     private string password;
     private string errorMessage;
     [CascadingParameter] protected Task<AuthenticationState> AuthStat { get; set; }
+    [CascadingParameter] BlazoredModalInstance ModalInstance { get; set; }
 
     public async Task PerformLogin()
     {
@@ -73,24 +60,13 @@
 
             UserService.SetUserId(int.Parse(userPrincipal.FindFirst(c => c.Type == ClaimTypes.SerialNumber)?.Value));
             email = "";
-            password = "";
+            password = "";               
+            await InvokeAsync(StateHasChanged);
+            await ModalInstance.CloseAsync(ModalResult.Cancel());
         }
         catch (Exception e)
         {
             errorMessage = e.Message;
         }
-    }
-    
-    public async Task PerformLogout()
-    {
-        errorMessage = "";
-        email = "";
-        password = "";
-        try
-        {
-            ((CustomAuthenticationStateProvider)AuthenticationStateProvider).Logout();
-            NavigationManager.NavigateTo("/");
-        }
-        catch (Exception e) { }
     }
 }
