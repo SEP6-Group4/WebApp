@@ -86,7 +86,7 @@ else
                                     <AuthorizeView>
                                         <a href="/MovieOverview" title="Remove from favourite list" @onclick="RemoveMovieFromFavorites" style="text-decoration:none;"><i class="bi bi-heart-fill"></i></a>
                                     </AuthorizeView>
-                                </h2> <br>
+                                </h2>
                             }
                             else
                             {
@@ -95,9 +95,14 @@ else
                                     <AuthorizeView>
                                         <a href="/MovieOverview" title="Add to favourite list" @onclick="AddMovieToFavorites" style="text-decoration:none;"><i class="bi bi-heart"></i></a>
                                     </AuthorizeView>
-                                </h2> <br>
+                                </h2>
                             }
-                            <h4>Overview</h4>
+                                @foreach (var genre in genres)
+                                {
+                                  <span class="genre-label">@genre.name</span>
+                                } 
+
+                            <h4 class="movie-overview">Overview</h4>
                             <p>@movie.overview</p>
                         </div> <br> <br>
                         <div class="col-md-12">
@@ -139,6 +144,7 @@ else
     private Credit credit = new Credit();
     private List<Actor> actors = new List<Actor>();
     private bool isMovieFavorited = false;
+    private List<Genre> genres = new List<Genre>();
 
     protected override async Task OnInitializedAsync()
     {
@@ -151,6 +157,7 @@ else
         {
             actors.Add(actor);
         }
+        movie.genres.ForEach(x => genres.Add(x));
     }
 
     private async Task<Movie> GetMovie(int id)

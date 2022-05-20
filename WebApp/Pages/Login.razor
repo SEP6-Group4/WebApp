@@ -24,13 +24,13 @@
                                 <label class="oi oi-lock-locked"> Password</label>
                                 <input type="password" class="form-control" placeholder="Password" @bind-value="password" required>
                             </div>
-                             <div class="form-label-group">
-                                <button class="btn btn-outline-success btn-block text-uppercase" type="submit" @onclick="PerformLogin">Log in</button>
-                             </div>
-                             <div class="form-label-group">
-                                <p class="text-center">Don't have an account? <a class="btn btn-primary" href="CreateAccount">Sign up</a> </p>
-                            </div>
                     </form>
+                    <div class="form-label-group">
+                         <button class="btn btn-outline-success btn-block text-uppercase" type="submit" @onclick="PerformLogin">Log in</button>
+                    </div>
+                    <div class="form-label-group">
+                           <p class="text-center">Don't have an account? <a class="btn btn-primary" href="CreateAccount">Sign up</a> </p>
+                    </div>
 
                     @if (!string.IsNullOrWhiteSpace(errorMessage))
                     {

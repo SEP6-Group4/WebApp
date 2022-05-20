@@ -225,3 +225,15 @@ div .filter button {
         width: -webkit-fill-available;
         margin-top: 1rem;
     }
+
+.genre-label {
+    background-color: rgba(0,0,0,0.5);
+    color: aliceblue;
+    padding: .4rem;
+    margin: .2rem;
+    border-radius: 1rem;
+}
+
+.movie-overview {
+    margin-top:2rem;
+}

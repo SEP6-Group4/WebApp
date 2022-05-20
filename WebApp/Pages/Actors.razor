@@ -62,7 +62,7 @@ else
         <div class="align-content-center" style="text-align:center">
             <a href="/Actors" class="btn btn-white" @onclick="FirstPage" title="First Page"><i class="bi bi-chevron-double-left"></i> </a>
             <a href="/Actors" class="btn btn-white" @onclick="PreviousPage" title="Previous Page"> <i class="bi bi-arrow-left-square"></i> </a>
-            <span>Page @actorList.CurrentPage of @actorList.TotalPage </span>
+            <span>Page @currentPage of @actorList.TotalPage </span>
             <a href="/Actors" class="btn btn-white" @onclick="NextPage" title="Next Page"><i class="bi bi-arrow-right-square"></i> </a>
             <a href="/Actors" class="btn btn-white" @onclick="LastPage" title="Last Page"><i class="bi bi-chevron-double-right"></i> </a>
         </div>
@@ -75,6 +75,8 @@ else
     private bool dropDownSelect = false;
     public string searchQuery = "";
     private int currentPage = 1;
+    private List<List<Actor>> splitedFavouriteList;
+    private bool isFavouriteList = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -100,6 +102,7 @@ else
         {
             favouriteActors.Add(await ActorService.GetActorByID(id));
         }
+        splitedFavouriteList = SplitList(favouriteActors); 
 
     }
 
@@ -120,10 +123,14 @@ else
     {
         if (currentPage < actorList.TotalPage)
         {
-            currentPage = actorList.CurrentPage + 1;
+            currentPage += 1;
             if (searchQuery != "")
             {
                 await GetActorBySearch();
+            }
+            else if (isFavouriteList)
+            {
+                favouriteListPage(); 
             }
             else
             {
@@ -136,10 +143,14 @@ else
     {
         if (currentPage > 1)
         {
-            currentPage = actorList.CurrentPage - 1;
+            currentPage -= 1;
             if (searchQuery != "")
             {
                 await GetActorBySearch();
+            }
+            else if (isFavouriteList)
+            {
+                favouriteListPage(); 
             }
             else
             {
@@ -157,6 +168,10 @@ else
             {
                 await GetActorBySearch();
             }
+            else if (isFavouriteList)
+            {
+                favouriteListPage(); 
+            }
             else
             {
                 actorList = await GetActors(currentPage);
@@ -172,6 +187,10 @@ else
             if (searchQuery != "")
             {
                 await GetActorBySearch();
+            }
+            else if (isFavouriteList)
+            {
+                favouriteListPage(); 
             }
             else
             {
@@ -190,13 +209,43 @@ else
         if (e.Value.Equals("Favorites"))
         {
             await GetFavouriteActors();
-            actorList.Actors = favouriteActors;
+            currentPage = 1;
+            actorList.Actors = favouriteActors;            
+            favouriteListPage();
+            isFavouriteList = true;
         }
         else if(e.Value.Equals("All")) {
+            currentPage = 1;
             actorList = await GetActors(currentPage);
+            isFavouriteList = false;
 
         }
         dropDownSelect = true;
         await InvokeAsync(StateHasChanged);
     }
+
+    private void favouriteListPage()
+    {      
+        actorList.TotalPage = splitedFavouriteList.Count;
+
+        foreach (var item in splitedFavouriteList.Select((value, index) => new {value, index}))
+        {
+            if (item.index + 1 == currentPage)
+            {
+               actorList.Actors = item.value;
+            }
+        }
+    }
+
+    public static List<List<Actor>> SplitList(List<Actor> favouriteActors, int nSize=20)  
+    {        
+        var list = new List<List<Actor>>(); 
+
+        for (int i = 0; i < favouriteActors.Count; i += nSize) 
+        { 
+            list.Add(favouriteActors.GetRange(i, Math.Min(nSize, favouriteActors.Count - i))); 
+        } 
+
+        return list; 
+    }  
 }
