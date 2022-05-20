@@ -29,11 +29,25 @@ namespace WebApp.Data.FavoriteMovie
             await client.PostAsync(url + "/addFavorite?userID=" + userID + "&movieID=" + movieID, content);
         }
 
+        public async Task<int> GetFavoriteMovieCount(int movieID)
+        {
+            string message = await client.GetStringAsync(url + "/getFavoriteMovieCount?movieID=" + movieID);
+            int results = JsonSerializer.Deserialize<int>(message);
+            return results;
+        }
+
         public async Task<MovieList> GetFavoriteMoviesByID(int userID)
         {
             string message = await client.GetStringAsync(url + "/getFavorites?userID=" + userID);
             MovieList results = JsonSerializer.Deserialize<MovieList>(message);
             return results;
+        }
+
+        public async Task<List<IdCount>> GetFavoriteMoviesByAgeGroup(int ageGroup)
+        {
+            string message = await client.GetStringAsync(url + "/getFavoriteMovieIdsByAgeGroup?ageGroup=" + ageGroup);
+            List<IdCount> result = JsonSerializer.Deserialize<List<IdCount>>(message);
+            return result;
         }
 
         public async Task<bool> GetIsFavoriteMovieByID(int userID, int movieID)
