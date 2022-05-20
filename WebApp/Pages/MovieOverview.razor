@@ -56,7 +56,7 @@ else
                                         <i class="bi bi-star"></i>
                                         break;
                                     case 4:
-                                       <span>(@movie.vote_average / 10)</span>
+                                        <span>(@movie.vote_average / 10)</span>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
                                         <i class="bi bi-star-fill"></i>
@@ -79,13 +79,16 @@ else
                     </div>
                     <div class="col-md-8">
                         <div>
+
                             @if (isMovieFavorited)
                             {
                                 <h2>
                                     @movie.title
                                     <AuthorizeView>
                                         <a href="/MovieOverview" title="Remove from favourite list" @onclick="RemoveMovieFromFavorites" style="text-decoration:none;"><i class="bi bi-bookmark-x-fill"></i></a>
+                                        <h5>(@favoriteCount)</h5>
                                     </AuthorizeView>
+
                                 </h2> <br>
                             }
                             else
@@ -94,6 +97,7 @@ else
                                     @movie.title
                                     <AuthorizeView>
                                         <a href="/MovieOverview" title="Add to favourite list" @onclick="AddMovieToFavorites" style="text-decoration:none;"><i class="bi bi-bookmark-heart-fill"></i></a>
+                                        <h5>(@favoriteCount)</h5>
                                     </AuthorizeView>
                                 </h2> <br>
                             }
@@ -139,6 +143,7 @@ else
     private Credit credit = new Credit();
     private List<Actor> actors = new List<Actor>();
     private bool isMovieFavorited = false;
+    private int favoriteCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -151,6 +156,7 @@ else
         {
             actors.Add(actor);
         }
+        favoriteCount = await FavoriteMovieService.GetFavoriteMovieCount(MovieService.GetMovieId());
     }
 
     private async Task<Movie> GetMovie(int id)
@@ -181,8 +187,8 @@ else
     {
         return await FavoriteMovieService.GetIsFavoriteMovieByID(UserService.GetUserId(), MovieService.GetMovieId());
     }
-      
-   public async Task ActorSelected(int id)
+
+    public async Task ActorSelected(int id)
     {
         ActorService.SetActorId(id);
     }
