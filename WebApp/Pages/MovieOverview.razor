@@ -84,9 +84,9 @@ else
                             {
                                 <h2>
                                     @movie.title
-                                    <AuthorizeView>
-                                        <a href="/MovieOverview" title="Remove from favourite list" @onclick="RemoveMovieFromFavorites" style="text-decoration:none;"><i class="bi bi-heart-fill"></i></a>
-                                        <h5>(@favoriteCount)</h5>
+                                    <AuthorizeView>      
+                                        <a  href="/MovieOverview" title="Remove from favourite list" @onclick="RemoveMovieFromFavorites" style="text-decoration:none;"><i style="width:fit-content" class="bi bi-heart-fill"></i> </a>
+                                        (@favoriteCount)
                                     </AuthorizeView>
                                 </h2>
                             }
@@ -94,9 +94,9 @@ else
                             {
                                 <h2>
                                     @movie.title
-                                    <AuthorizeView>
-                                        <a href="/MovieOverview" title="Add to favourite list" @onclick="AddMovieToFavorites" style="text-decoration:none;"><i class="bi bi-heart"></i></a>
-                                        <h5>(@favoriteCount)</h5>
+                                    <AuthorizeView>                                        
+                                        <a href="/MovieOverview" title="Add to favourite list" @onclick="AddMovieToFavorites" style="text-decoration:none;"><i style="width:fit-content" class="bi bi-heart"></i> </a>
+                                        (@favoriteCount)
                                     </AuthorizeView>
                                 </h2>
                             }
@@ -179,14 +179,16 @@ else
 
     private async Task AddMovieToFavorites()
     {
-        isMovieFavorited = true;
+        isMovieFavorited = true;        
         await FavoriteMovieService.AddFavoriteMovie(UserService.GetUserId(), MovieService.GetMovieId());
+        favoriteCount += 1;
     }
 
     private async Task RemoveMovieFromFavorites()
     {
-        isMovieFavorited = false;
+        isMovieFavorited = false;       
         await FavoriteMovieService.RemoveFavoriteMovieByID(UserService.GetUserId(), MovieService.GetMovieId());
+        favoriteCount -= 1;
     }
 
     private async Task<bool> IsMovieFavorited()
