@@ -1,0 +1,222 @@
+﻿@page "/Statistics"
+@using WebApp.Data.FavoriteMovie
+@using WebApp.Data.Movies
+@using WebApp.Data.Users
+@using WebApp.Models
+@inject IMovieService MovieService
+@inject IFavoriteMovieService FavoriteMovieService
+
+<h3 style="text-align:center;">Top 5 Favourite Movies among age group of:</h3>
+@if (movies6 == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else if (!movies6.Any())
+{
+    <p>
+        <em>No data available!</em>
+    </p>
+}
+else
+{
+    <div>
+        <h4 style="text-align:center;"> 0 - 14:</h4>
+        <p hidden=@true>
+            @(i = 0)
+        </p>
+        <div class="row">
+            @foreach (var m in movies1)
+            {
+                <div class="col-md-2 card">
+                    <div>
+                        <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                            <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
+                        </a>
+                    </div>
+                    <div class="title">
+                        <h5><a> @m.title</a></h5>
+                        <p>
+                            (Listed in favourite: @movies1IdsCount[i].count)
+                        </p>
+                        <p hidden=@true>
+                            @(i++)
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+        <h4 style="text-align:center;"> 15 - 21:</h4>
+        <p hidden=@true>
+            @(i = 0)
+        </p>
+        <div class="row">
+            @foreach (var m in movies2)
+            {
+                <div class="col-md-2 card">
+                    <div>
+                        <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                            <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
+                        </a>
+                    </div>
+                    <div class="title">
+                        <h5><a> @m.title</a></h5>
+                        <p>
+                            (Listed in favourite: @movies2IdsCount.ElementAt(i).count)
+                        </p>
+                        <p hidden=@true>
+                            @i++
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+        <h4 style="text-align:center;"> 22 - 29:</h4>
+        <p hidden=@true>
+            @(i = 0)
+        </p>
+        <div class="row">
+            @foreach (var m in movies3)
+            {
+                <div class="col-md-2 card">
+                    <div>
+                        <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                            <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
+                        </a>
+                    </div>
+                    <div class="title">
+                        <h5><a> @m.title</a></h5>
+                        <p>
+                            (Listed in favourite: @movies3IdsCount.ElementAt(i).count)
+                        </p>
+                        <p hidden=@true>
+                            @i++
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+        <h4 style="text-align:center;"> 30 - 40:</h4>
+        <p hidden=@true>
+            @(i = 0)
+        </p>
+        <div class="row">
+            @foreach (var m in movies4)
+            {
+                <div class="col-md-2 card">
+                    <div>
+                        <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                            <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
+                        </a>
+                    </div>
+                    <div class="title">
+                        <h5><a> @m.title</a></h5>
+                        <p>
+                            (Listed in favourite: @movies4IdsCount.ElementAt(i).count)
+                        </p>
+                        <p hidden=@true>
+                            @i++
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+        <h4 style="text-align:center;"> 41 - 55:</h4>
+        <p hidden=@true>
+            @(i = 0)
+        </p>
+        <div class="row">
+            @foreach (var m in movies5)
+            {
+                <div class="col-md-2 card">
+                    <div>
+                        <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                            <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
+                        </a>
+                    </div>
+                    <div class="title">
+                        <h5><a> @m.title</a></h5>
+                        <p>
+                            (Listed in favourite: @movies5IdsCount.ElementAt(i).count)
+                        </p>
+                        <p hidden=@true>
+                            @i++
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+        <h4 style="text-align:center;"> 56 - 99+:</h4>
+        <p hidden=@true>
+            @(i = 0)
+        </p>
+        <div class="row">
+            @foreach (var m in movies6)
+            {
+                <div class="col-md-2 card">
+                    <div>
+                        <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                            <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
+                        </a>
+                    </div>
+                    <div class="title">
+                        <h5><a> @m.title</a></h5>
+                        <p>
+                            (Listed in favourite: @movies6IdsCount.ElementAt(i).count)
+                        </p>
+                        <p hidden=@true>
+                            @i++
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    private int i { get; set; }
+    private List<IdCount> movies1IdsCount = new List<IdCount>();
+    private List<IdCount> movies2IdsCount = new List<IdCount>();
+    private List<IdCount> movies3IdsCount = new List<IdCount>();
+    private List<IdCount> movies4IdsCount = new List<IdCount>();
+    private List<IdCount> movies5IdsCount = new List<IdCount>();
+    private List<IdCount> movies6IdsCount = new List<IdCount>();
+    private List<Movie> movies1 = new List<Movie>();
+    private List<Movie> movies2 = new List<Movie>();
+    private List<Movie> movies3 = new List<Movie>();
+    private List<Movie> movies4 = new List<Movie>();
+    private List<Movie> movies5 = new List<Movie>();
+    private List<Movie> movies6 = new List<Movie>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadMovies();
+    }
+
+    private async Task LoadMovies()
+    {
+        movies1IdsCount = await FavoriteMovieService.GetFavoriteMoviesByAgeGroup(1);
+        movies2IdsCount = await FavoriteMovieService.GetFavoriteMoviesByAgeGroup(2);
+        movies3IdsCount = await FavoriteMovieService.GetFavoriteMoviesByAgeGroup(3);
+        movies4IdsCount = await FavoriteMovieService.GetFavoriteMoviesByAgeGroup(4);
+        movies5IdsCount = await FavoriteMovieService.GetFavoriteMoviesByAgeGroup(5);
+        movies6IdsCount = await FavoriteMovieService.GetFavoriteMoviesByAgeGroup(6);
+
+        for (var i = 0; i < 5; i++)
+        {
+            movies1.Add(await MovieService.GetMovieByID(movies1IdsCount.ElementAt(i).MovieId));
+            movies2.Add(await MovieService.GetMovieByID(movies2IdsCount.ElementAt(i).MovieId));
+            movies3.Add(await MovieService.GetMovieByID(movies3IdsCount.ElementAt(i).MovieId));
+            movies4.Add(await MovieService.GetMovieByID(movies4IdsCount.ElementAt(i).MovieId));
+            movies5.Add(await MovieService.GetMovieByID(movies5IdsCount.ElementAt(i).MovieId));
+            movies6.Add(await MovieService.GetMovieByID(movies6IdsCount.ElementAt(i).MovieId));
+        }
+    }
+
+    public async Task MovieSelected(int id)
+    {
+        MovieService.SetMovieId(id);
+    }
+}
