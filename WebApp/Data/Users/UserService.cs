@@ -26,7 +26,21 @@ namespace WebApp.Data.Users
         public async Task<User> ValidateUser(string email, string password)
         {
             string message = await client.GetStringAsync($"{url}/validate?email={email}&password={password}");
-            Console.WriteLine("Response received");
+            try
+            {
+                User result = JsonSerializer.Deserialize<User>(message);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.StackTrace);
+                return null;
+            }
+        }
+
+        public async Task<User> GetUserByID(int id)
+        {
+            string message = await client.GetStringAsync($"{url}/get?id={id}");
             try
             {
                 User result = JsonSerializer.Deserialize<User>(message);
@@ -60,6 +74,19 @@ namespace WebApp.Data.Users
                 );
 
             await client.PostAsync($"{url}/createAccount", content);
+        }
+
+        public async Task UpdateAccount(User user)
+        {
+            string userSerialized = JsonSerializer.Serialize(user);
+
+            HttpContent content = new StringContent(
+                userSerialized,
+                Encoding.UTF8,
+                "application/json"
+                );
+
+            await client.PutAsync($"{url}/updateAccount", content);
         }
     }
 }

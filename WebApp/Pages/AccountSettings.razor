@@ -1,0 +1,168 @@
+﻿@page "/AccountSettings"
+@using Data.Users
+@using Microsoft.AspNetCore.Components.Forms
+@using Models
+@inject IUserService UsersService
+@inject NavigationManager NavigationManager
+
+<EditForm Model="@updatedUser" OnValidSubmit="@UpdateUser">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="container">
+
+        <div class="row">
+            <div class="col-md-9 mx-auto">
+                <div class="card card-register">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Update Account Info</h5>
+                        <div class="form-register">
+
+                            <div class="form-label-group">
+
+                                <label><i class="oi oi-person"> </i> First Name:</label>
+                                <InputText class="form-control" @bind-Value="updatedUser.FirstName" placeholder="First Name" required />
+
+                                <label><i class="oi oi-person">  </i> Last Name:</label>
+                                <InputText class="form-control" @bind-Value="updatedUser.LastName" placeholder="Last Name" required />
+
+                                <label><i class="oi oi-envelope-closed">  </i> Email: @updatedUser.Email</label>
+
+                                <div class="row">
+                                    <div class="col-md-6 ">
+                                        <label><i class="oi oi-globe">  </i> Country:</label>
+                                        <InputText class="form-control" @bind-Value="updatedUser.Country" placeholder="Country" required />
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label><i class="oi oi-calendar">  </i> Date Of Birth:</label> <br />
+                                        <InputDate @bind-Value="@birthday" rows="1" />
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 ">
+                                        <label><i class="oi oi-globe">  </i> Account visibility:</label>
+                                        <select class="form-select" aria-label="Default select example" @onchange="@HandleChange">
+                                            <option value="Private">Private</option>
+                                            <option value="Public">Public</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row form-label-group">
+                                <div class="col-md-6">
+                                    <label><i class="oi oi-lock-locked">  </i> Password:</label>
+                                    <InputText class="form-control" type="password" @bind-Value="password" placeholder="Password" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label><i class="oi oi-lock-locked">  </i> Confirm Password:</label>
+                                    <InputText class="form-control" type="password" @bind-Value="confirmPassword" placeholder="Confirm Password" required />
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="text-center">
+                            <button class="btn btn-outline-success btn-block text-uppercase" type="submit" style="margin-top: 1rem; margin-bottom: .5rem; ">Update</button>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(message))
+                        {
+                            <div class="alert alert-danger">
+                                @message
+                            </div>
+                        }
+                    </div>
+
+                </div>
+
+                <footer>
+                    <div class="footer-copyright text-center py-3">
+                        © 2022 Copyright SEP6-Group4
+                    </div>
+
+                </footer>
+
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+@code {
+    private User updatedUser = new User();
+    private DateTime birthday = new DateTime();
+
+    private string password;
+    private string confirmPassword;
+    string message = String.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        updatedUser = await UsersService.GetUserByID(UsersService.GetUserId());
+        if(updatedUser.FavouritePrivacy == null)
+        {
+            updatedUser.FavouritePrivacy = true;
+        }
+    }
+
+    private void UpdateUser()
+    {
+        if (password.Equals(confirmPassword))
+        {
+            updatedUser.Password = password;
+            updatedUser.Birthday = birthday;
+
+            DateTime today = DateTime.Today;
+            int age = today.Year - birthday.Year;
+            if (birthday.Date > today.AddYears(-age))
+            {
+                age--;
+            }
+
+            updatedUser.Age = age;
+
+            if (age < 15)
+            {
+                updatedUser.AgeGroup = 1;
+            }
+            else if (age < 22)
+            {
+                updatedUser.AgeGroup = 2;
+            }
+            else if (age < 30)
+            {
+                updatedUser.AgeGroup = 3;
+            }
+            else if (age < 41)
+            {
+                updatedUser.AgeGroup = 4;
+            }
+            else if (age < 56)
+            {
+                updatedUser.AgeGroup = 5;
+            }
+            else
+            {
+                updatedUser.AgeGroup = 6;
+            }
+
+            UsersService.UpdateAccount(updatedUser);
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            message = "Password does not match!";
+        }
+    }
+
+    public async void HandleChange(ChangeEventArgs e)
+    {
+        if (e.Value.Equals("Private"))
+        {
+            updatedUser.FavouritePrivacy = true;
+        }
+        else if (e.Value.Equals("Public"))
+        {
+            updatedUser.FavouritePrivacy = false;            
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+}

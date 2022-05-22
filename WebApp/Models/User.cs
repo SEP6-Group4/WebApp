@@ -24,5 +24,7 @@ namespace WebApp.Models
         public int? AgeGroup { get; set; }
         [JsonPropertyName("Age")]
         public int? Age { get; set; }
+        [JsonPropertyName("FavouritePrivacy")]
+        public bool? FavouritePrivacy { get; set; }
     }
 }

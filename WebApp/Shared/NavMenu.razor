@@ -21,7 +21,7 @@
 
         <div class="nav-item px-3">
             <a class="nav-link" href="login">
-                <i class="bi bi-box-arrow-in-right"></i> Login 
+                <i class="bi bi-box-arrow-in-right"></i> Login
             </a>
         </div>
 
@@ -30,13 +30,20 @@
                 <i class="bi bi-person-plus-fill"></i> Create Account
             </a>
         </div>
+        <AuthorizeView>
+            <div class="nav-item px-3">
+                <a class="nav-link" href="AccountSettings">
+                    <i class="bi bi-person-plus-fill"></i> Account Settings
+                </a>
+            </div>
+        </AuthorizeView>
     </nav>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
     private bool showNavToggler = false;
-    
+
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
