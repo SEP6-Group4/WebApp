@@ -6,7 +6,6 @@
 @inject IMovieService MovieService
 @inject IFavoriteMovieService FavoriteMovieService
 
-<h3 style="text-align:center;">Top 5 Favourite Movies among age group of:</h3>
 @if (movies6 == null)
 {
     <p>
@@ -15,13 +14,39 @@
 }
 else if (!movies6.Any())
 {
-    <p>
-        <em>No data available!</em>
-    </p>
+    <h4 style="text-align:center;">
+        <em>Loading...</em>
+    </h4>
 }
 else
 {
+    <h3 style="text-align:center;">Top 5 Favourite Movies among age group of:</h3>
     <div>
+        <h4 style="text-align:center;"> All:</h4>
+        <p hidden=@true>
+            @(i = 0)
+        </p>
+        <div class="row">
+            @foreach (var m in moviesAll)
+            {
+                <div class="col-md-2 card">
+                    <div>
+                        <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                            <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
+                        </a>
+                    </div>
+                    <div class="title">
+                        <h5><a> @m.title</a></h5>
+                        <p>
+                            (Listed in favourite: @moviesAllIdsCount[i].count)
+                        </p>
+                        <p hidden=@true>
+                            @(i++)
+                        </p>
+                    </div>
+                </div>
+            }
+        </div>
         <h4 style="text-align:center;"> 0 - 14:</h4>
         <p hidden=@true>
             @(i = 0)
@@ -177,12 +202,14 @@ else
 
 @code {
     private int i { get; set; }
+    private List<IdCount> moviesAllIdsCount = new List<IdCount>();
     private List<IdCount> movies1IdsCount = new List<IdCount>();
     private List<IdCount> movies2IdsCount = new List<IdCount>();
     private List<IdCount> movies3IdsCount = new List<IdCount>();
     private List<IdCount> movies4IdsCount = new List<IdCount>();
     private List<IdCount> movies5IdsCount = new List<IdCount>();
     private List<IdCount> movies6IdsCount = new List<IdCount>();
+    private List<Movie> moviesAll = new List<Movie>();
     private List<Movie> movies1 = new List<Movie>();
     private List<Movie> movies2 = new List<Movie>();
     private List<Movie> movies3 = new List<Movie>();
@@ -197,6 +224,7 @@ else
 
     private async Task LoadMovies()
     {
+        moviesAllIdsCount = await FavoriteMovieService.GetFavoriteMoviesByAll();
         movies1IdsCount = await FavoriteMovieService.GetFavoriteMoviesByAgeGroup(1);
         movies2IdsCount = await FavoriteMovieService.GetFavoriteMoviesByAgeGroup(2);
         movies3IdsCount = await FavoriteMovieService.GetFavoriteMoviesByAgeGroup(3);
@@ -206,6 +234,7 @@ else
 
         for (var i = 0; i < 5; i++)
         {
+            moviesAll.Add(await MovieService.GetMovieByID(moviesAllIdsCount.ElementAt(i).MovieId));
             movies1.Add(await MovieService.GetMovieByID(movies1IdsCount.ElementAt(i).MovieId));
             movies2.Add(await MovieService.GetMovieByID(movies2IdsCount.ElementAt(i).MovieId));
             movies3.Add(await MovieService.GetMovieByID(movies3IdsCount.ElementAt(i).MovieId));

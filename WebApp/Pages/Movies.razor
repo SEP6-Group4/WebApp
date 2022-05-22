@@ -90,7 +90,34 @@ else
         MovieList result = new MovieList();
         if (dropdownSelectName.Equals("Favorites"))
         {
-            result = await FavoriteMovieService.GetFavoriteMoviesByID(UserService.GetUserId());
+            //result = await FavoriteMovieService.GetFavoriteMoviesByID(UserService.GetUserId());
+
+            List<Movie> movies = await FavoriteMovieService.GetFavoriteMoviesByUser(UserService.GetUserId());
+
+            int count = (page * 20);
+            MovieList list = new MovieList();
+            list.movies = new List<Movie>();
+            list.TotalPage = (int)Math.Ceiling((double)movies.Count / 20);
+            list.CurrentPage = currentPage;
+
+            if (movies.Count - count >= 0)
+            {
+
+                for (int i = count - 20; i < count; i++)
+                {
+                    list.movies.Add(movies[i]);
+                }
+                result = list;
+            }
+            else
+            {
+                for (int i = count - 20; i < movies.Count; i++)
+                {
+                    list.movies.Add(movies[i]);
+                    Console.WriteLine(movies[i].title);
+                }
+                result = list;
+            }
         }
         else if (dropdownSelectName.Equals("RatingDesc"))
         {
@@ -199,7 +226,27 @@ else
         {
             dropdownSelectName = "Favorites";
             currentPage = 1;
-            movieList = await FavoriteMovieService.GetFavoriteMoviesByID(UserService.GetUserId());
+            List<Movie> movies = await FavoriteMovieService.GetFavoriteMoviesByUser(UserService.GetUserId());
+            MovieList result = new MovieList();
+            result.movies = new List<Movie>();
+            result.TotalPage = (int)Math.Ceiling((double)movies.Count / 20);
+            result.CurrentPage = 1;
+            if (movies.Count >= 20)
+            {
+                for (int i = 0; i < 20; i++)
+                {
+                    result.movies.Add(movies[i]);
+                }
+                movieList = result;
+            }
+            else
+            {
+                for (int i = 0; i < movies.Count; i++)
+                {
+                    result.movies.Add(movies[i]);
+                }
+                movieList = result;
+            }
         }
         else if (e.Value.Equals("RatingDesc"))
         {
