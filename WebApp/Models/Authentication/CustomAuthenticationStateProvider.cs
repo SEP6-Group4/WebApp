@@ -56,7 +56,7 @@ namespace WebApp.Models.Authentication
                 User user = await userService.ValidateUser(email, password);
                 identity = SetupClaimsForUser(user);
                 string serialisedData = JsonSerializer.Serialize(user);
-                jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);
+                await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);
                 cachedUser = user;
             }
             catch (Exception e)

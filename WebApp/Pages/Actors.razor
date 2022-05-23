@@ -1,0 +1,263 @@
+﻿@page "/Actors"
+@using WebApp.Data.Actors
+@using WebApp.Data.FavouriteActor
+@using WebApp.Models
+@using WebApp.Data.Users
+@inject IFavouriteActorService FavouriteActorService
+@inject IActorService ActorService
+@inject IUserService UserService
+
+@if (actorList.Actors == null)
+{
+    <div class="text-center">
+        <div class="spinner-border col-md-12" style="width: 3rem; height: 3rem;" role="status"></div>
+    </div>
+}
+else if (!actorList.Actors.Any())
+{
+    <div class="text-center">
+        <div class="spinner-border col-md-12" style="width: 3rem; height: 3rem;" role="status"></div>
+    </div>
+}
+else
+{
+    <div class="container">
+        <div class="row filter">
+            <AuthorizeView>
+                <div class="col-md-3">    
+                    <select class="form-select" aria-label="Default select example" @onchange="@HandleChange">
+                        @if (isFavouriteList)
+                        {
+                            <option value="Favorites">Your favorite actors</option>  
+                            <option value="All">All actors</option>
+                        }
+                        else
+                        {
+                             <option value="All">All actors</option>   
+                             <option value="Favorites">Your favorite actors</option>
+                        }                  
+                    </select>       
+                </div>
+             </AuthorizeView>
+            <div class=" col-md-7">
+                <input type="search" @bind-value="searchQuery" placeholder="Search" class="form-control" maxlength="150" />
+            </div>
+            <button class="btn btn-primary" @onclick="GetActorBySearch">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
+
+        <div class="row">
+            @foreach (var a in actorList.Actors)
+            {
+                    <div class="col-md-2 card">
+                        <div>
+                            <a href="/ActorOverview" class="card-img" @onclick="() => ActorSelected(a.Id)">
+                                @if (a.ProfilePath != null)
+                                {
+                                    <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@a.ProfilePath">
+                                }
+                                else
+                                {
+                                    <img class="movie-image" src="/User_gray.png"> <br> <br> <br> <br> <br>
+                                }
+                                
+                            </a>
+                        </div>
+                        <div class="title">
+                            <h5><a> @a.Name</a></h5>
+                        </div>
+                    </div>                
+            }
+        </div>
+
+        <div class="align-content-center" style="text-align:center">
+            <a href="/Actors" class="btn btn-white" @onclick="FirstPage" title="First Page"><i class="bi bi-chevron-double-left"></i> </a>
+            <a href="/Actors" class="btn btn-white" @onclick="PreviousPage" title="Previous Page"> <i class="bi bi-arrow-left-square"></i> </a>
+            <span>Page @currentPage of @actorList.TotalPage </span>
+            <a href="/Actors" class="btn btn-white" @onclick="NextPage" title="Next Page"><i class="bi bi-arrow-right-square"></i> </a>
+            <a href="/Actors" class="btn btn-white" @onclick="LastPage" title="Last Page"><i class="bi bi-chevron-double-right"></i> </a>
+        </div>
+    </div>
+}
+@code {
+    private List<int> actorIds = new List<int>();
+    private List<Actor> favouriteActors = new List<Actor>();
+    private ActorList actorList = new ActorList();
+    private bool dropDownSelect = false;
+    public string searchQuery = "";
+    private int currentPage = 1;
+    private List<List<Actor>> splitedFavouriteList;
+    private bool isFavouriteList = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        actorList = await GetActors(currentPage);
+    }
+
+    private async Task<ActorList> GetActors(int page)
+    {
+        var result = await ActorService.GetPopularActors(page);
+        return result;
+    }
+
+    private async Task GetFavouriteActorIds(int userId)
+    {
+        actorIds = await FavouriteActorService.GetFavouriteActorIds(userId);
+    }
+
+    protected async Task GetFavouriteActors()
+    {
+        actorList.Actors?.Clear();
+        await GetFavouriteActorIds(UserService.GetUserId());
+        favouriteActors.Clear();
+        foreach (int id in actorIds)
+        {
+            favouriteActors.Add(await ActorService.GetActorByID(id));
+        }
+        splitedFavouriteList = SplitList(favouriteActors); 
+
+    }
+
+    protected async Task GetActorBySearch()
+    {
+        if (searchQuery == "")
+        {
+            currentPage = 1;
+            actorList = await GetActors(currentPage);
+        }
+        else
+        {
+            actorList = await ActorService.GetActorsBySearch(currentPage, searchQuery);
+        }
+    }
+
+    protected async Task NextPage()
+    {
+        if (currentPage < actorList.TotalPage)
+        {
+            currentPage += 1;
+            if (searchQuery != "")
+            {
+                await GetActorBySearch();
+            }
+            else if (isFavouriteList)
+            {
+                favouriteListPage(); 
+            }
+            else
+            {
+                actorList = await GetActors(currentPage);
+            }
+        }
+    }
+
+    protected async Task PreviousPage()
+    {
+        if (currentPage > 1)
+        {
+            currentPage -= 1;
+            if (searchQuery != "")
+            {
+                await GetActorBySearch();
+            }
+            else if (isFavouriteList)
+            {
+                favouriteListPage(); 
+            }
+            else
+            {
+                actorList = await GetActors(currentPage);
+            }
+        }
+    }
+
+    protected async Task FirstPage()
+    {
+        if (currentPage != 1)
+        {
+            currentPage = 1;
+            if (searchQuery != "")
+            {
+                await GetActorBySearch();
+            }
+            else if (isFavouriteList)
+            {
+                favouriteListPage(); 
+            }
+            else
+            {
+                actorList = await GetActors(currentPage);
+            }
+        }
+    }
+
+    protected async Task LastPage()
+    {
+        if (currentPage != actorList.TotalPage)
+        {
+            currentPage = actorList.TotalPage;
+            if (searchQuery != "")
+            {
+                await GetActorBySearch();
+            }
+            else if (isFavouriteList)
+            {
+                favouriteListPage(); 
+            }
+            else
+            {
+                actorList = await GetActors(currentPage);
+            }
+        }
+    }
+
+    public async Task ActorSelected(int id)
+    {
+        ActorService.SetActorId(id);
+    }
+
+    public async void HandleChange(ChangeEventArgs e)
+    {
+        if (e.Value.Equals("Favorites"))
+        {
+            await GetFavouriteActors();
+            currentPage = 1;          
+            favouriteListPage();
+            isFavouriteList = true;
+        }
+        else if(e.Value.Equals("All")) {
+            currentPage = 1;
+            actorList = await GetActors(currentPage);
+            isFavouriteList = false;
+
+        }
+        dropDownSelect = true;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private void favouriteListPage()
+    {      
+        actorList.TotalPage = splitedFavouriteList.Count;
+
+        foreach (var item in splitedFavouriteList.Select((value, index) => new {value, index}))
+        {
+            if (item.index + 1 == currentPage)
+            {                
+                actorList.Actors = item.value;
+            }
+        }
+    }
+
+    public static List<List<Actor>> SplitList(List<Actor> favouriteActors, int nSize=20)  
+    {        
+        var list = new List<List<Actor>>(); 
+
+        for (int i = 0; i < favouriteActors.Count; i += nSize) 
+        { 
+            list.Add(favouriteActors.GetRange(i, Math.Min(nSize, favouriteActors.Count - i))); 
+        } 
+
+        return list; 
+    }  
+}
