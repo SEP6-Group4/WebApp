@@ -1,0 +1,169 @@
+﻿@page "/Favorites"
+@using WebApp.Data.Actors
+@using WebApp.Data.FavoriteMovie
+@using WebApp.Data.FavouriteActor
+@using WebApp.Data.Movies
+@using WebApp.Data.Users
+@using WebApp.Models
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IMovieService MovieService
+@inject IActorService ActorService
+@inject IFavoriteMovieService FavoriteMovieService
+@inject IFavouriteActorService FavoriteActorService
+@inject IUserService UserService
+@inject NavigationManager uriHelper;
+
+
+
+<div class="container">
+    <div class="row filter">
+        <div class="col-md-3">
+            <select class="form-select" aria-label="Default select example" @onchange="@HandleChange">
+                <option value="Movies">Favorite Movies</option>
+                <option value="Actors">Favorite Actors</option>
+            </select>
+        </div>
+        <div class=" col-md-7">
+            <input type="search" @bind-value="searchQuery" placeholder="Enter an email..." class="form-control" maxlength="150" />
+        </div>
+        <button class="btn btn-primary" @onclick="GetFavorites">
+            <i class="bi bi-search"></i>
+        </button>
+    </div>
+
+    <div class="row">
+        @if (showList)
+        {
+            @if (isActors)
+            {
+                @foreach (var actor in actorList)
+                {
+                    <li class="card">
+                        <a href="/ActorOverview" class="card-img" @onclick="() => ActorSelected(actor.Id)">
+                            @if (@actor.ProfilePath != null)
+                            {
+                                <img class="actor-image" src="http://image.tmdb.org/t/p/w500/@actor.ProfilePath">
+                            }
+                            else
+                            {
+                                <img class="actor-image" src="/User_gray.png" style="margin-bottom:45px;">
+                            }
+                            <h6>@actor.OriginalName</h6>
+                        </a>
+                    </li>
+                }
+            }
+            else
+            {
+                @foreach (var m in movieList.movies)
+                {
+                    <div class="col-md-2 card">
+                        <div>
+                            <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                                <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
+                            </a>
+                        </div>
+                        <div class="title">
+                            <h5><a> @m.title</a></h5>
+                            <p>
+                                @m.release_date <br>
+                                (@m.vote_average / 10)
+                            </p>
+                        </div>
+                    </div>
+                }
+            }            
+        }
+        @if (!string.IsNullOrWhiteSpace(message))
+            {
+                <div class="alert alert-danger">
+                    @message
+                </div>
+            }
+    </div>    
+</div>
+
+@code {
+    private MovieList movieList = new MovieList();
+    private List<Actor> actorList = new List<Actor>();
+    private bool isActors = false;
+    public string searchQuery = "";
+    public bool showList = false;
+    string message = String.Empty;
+
+    private async Task<MovieList> GetFavMoviesByEmail()
+    {
+        var result = await FavoriteMovieService.GetFavoriteMoviesByEmail(searchQuery);
+        return result;
+    }
+
+    private async Task<List<Actor>> GetFavActorsByEmail()
+    {
+        var result = await FavoriteActorService.GetFavouriteActorsByEmail(searchQuery);
+        return result;
+    }
+
+    protected async Task GetFavorites()
+    {
+        message = "";
+        if (searchQuery == string.Empty)
+        {
+            showList = false;
+            message = "Please enter an email in the search field and try again";
+            return;
+        }
+
+        if (!isActors)
+        {
+            MovieList tempMovies = await GetFavMoviesByEmail();
+            if (tempMovies == null)
+            {
+                message = "The user either does not exist or their privacy settings are blocking your request";
+                return;
+            }
+            movieList = tempMovies;
+            showList = true;
+        }
+        else
+        {
+            List<Actor> tempActors = await GetFavActorsByEmail();
+
+            if (tempActors == null)
+            {
+                message = "The user either does not exist or their privacy settings are blocking your request";
+                return;
+            }
+
+            actorList = tempActors;
+            showList = true;
+        }
+    }
+
+    public async Task MovieSelected(int id)
+    {
+        MovieService.SetMovieId(id);
+    }
+
+    public async Task ActorSelected(int id)
+    {
+        ActorService.SetActorId(id);
+    }
+
+    public async void HandleChange(ChangeEventArgs e)
+    {
+        message = "";
+        if (e.Value.Equals("Movies"))
+        {
+            isActors = false;
+
+            await GetFavorites();
+        }
+        else if (e.Value.Equals("Actors"))
+        {
+            isActors = true;
+
+            await GetFavorites();
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+}

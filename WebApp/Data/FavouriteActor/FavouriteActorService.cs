@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using WebApp.Models;
 
 namespace WebApp.Data.FavouriteActor
 {
@@ -36,6 +37,20 @@ namespace WebApp.Data.FavouriteActor
             string message = await client.GetStringAsync(url + "/GetFavouriteActorIds/" + userId);
             List<int> result = JsonSerializer.Deserialize<List<int>>(message);
             return result;
+        }
+
+        public async Task<List<Actor>> GetFavouriteActorsByEmail(string email)
+        {
+            string message = await client.GetStringAsync(url + "/GetFavouriteActorIdsByEmail/" + email);
+            try
+            {
+                List<Actor> result = JsonSerializer.Deserialize<List<Actor>>(message);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
 
     }
