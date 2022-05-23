@@ -8,6 +8,7 @@ using WebApp.Data.Movies;
 using WebApp.Data.Users;
 using WebApp.Data.FavouriteActor;
 using WebApp.Models.Authentication;
+using Blazored.Modal;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -20,6 +21,7 @@ builder.Services.AddSingleton<IFavoriteMovieService, FavoriteMovieService>();
 builder.Services.AddSingleton<IActorService, ActorService>();
 builder.Services.AddSingleton<IFavouriteActorService, FavouriteActorService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+builder.Services.AddBlazoredModal();
 
 builder.Services.AddAuthorizationCore(options =>
 {

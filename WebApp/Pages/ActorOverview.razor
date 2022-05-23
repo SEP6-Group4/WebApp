@@ -41,13 +41,13 @@ else
                                 @if (!isActorFavourite)
                                 {
                                     <a href="/ActorOverview" title="Add to favourite list" style="text-decoration:none;" @onclick="() => AddActorToFavourite(UserService.GetUserId(), actor.Id) ">
-                                        <i class="bi bi-bookmark-x-fill"></i>
+                                       <i class="bi bi-heart"></i>
                                     </a>
                                 }
                                 else if(isActorFavourite)
                                 {
                                     <a href="/ActorOverview" title="Remove from favourite list" style="text-decoration:none;" @onclick="() => RemoveActorFromFavourite(UserService.GetUserId(), actor.Id)" >
-                                        <i class="bi bi-bookmark-heart-fill"></i>
+                                        <i class="bi bi-heart-fill"></i>
                                     </a>
                                 }
                                 </AuthorizeView>
@@ -96,7 +96,7 @@ else
     {
         actor = await GetActor(ActorService.GetActorId());
         credit = await GetMovieCreditsByActorId(ActorService.GetActorId());
-        actorIds = await GetFavouriteActorIds(1);
+        actorIds = await GetFavouriteActorIds(UserService.GetUserId());
         if (actorIds.Contains(actor.Id))
         {
             isActorFavourite = true;

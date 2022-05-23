@@ -8,6 +8,7 @@
 @inject IFavoriteMovieService FavoriteMovieService
 @inject IUserService UserService
 @inject NavigationManager uriHelper;
+@inject IModalService modal
 
 @if (movieList.movies == null)
 {
@@ -72,6 +73,8 @@ else
             <a href="/Movies" class="btn btn-white" @onclick="LastPage" title="Last Page"><i class="bi bi-chevron-double-right"></i> </a>
         </div>
     </div>
+
+    
 }
 @code {
     private MovieList movieList = new MovieList();
