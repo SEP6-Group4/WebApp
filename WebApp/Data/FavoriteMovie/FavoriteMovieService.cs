@@ -70,6 +70,21 @@ namespace WebApp.Data.FavoriteMovie
             bool result = JsonSerializer.Deserialize<bool>(message);
             return result;
         }
+        
+        public async Task<MovieList> GetFavoriteMoviesByEmail(string email)
+        {
+            string message = await client.GetStringAsync(url + "/getFavoritesByEmail?email=" + email);
+
+            try
+            {
+                MovieList result = JsonSerializer.Deserialize<MovieList>(message);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
 
         public async Task RemoveFavoriteMovieByID(int userID, int movieID)
         {

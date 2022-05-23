@@ -8,6 +8,7 @@ namespace WebApp.Data.FavoriteMovie
         Task<MovieList> GetFavoriteMoviesByID(int userID);
         Task<List<Movie>> GetFavoriteMoviesByUser(int userID);
         Task<bool> GetIsFavoriteMovieByID(int userID, int movieID);
+        Task<MovieList> GetFavoriteMoviesByEmail(string email);
         Task RemoveFavoriteMovieByID(int userID, int movieID);
         Task<int> GetFavoriteMovieCount(int movieID);
         Task<List<IdCount>> GetFavoriteMoviesByAgeGroup(int ageGroup);

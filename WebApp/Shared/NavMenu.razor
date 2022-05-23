@@ -35,9 +35,20 @@
                     <i class="bi bi-bar-chart-line"></i> Statistics
                 </a>
             </div>
-
-             <AuthorizeView>
-                 <Authorized>
+        <div class="nav-item px-3">
+            <a class="nav-link" href="Favorites">
+                <i class="bi bi-person-plus-fill"></i> Browse Favorites Lists
+            </a>
+        </div>
+        <AuthorizeView>
+            <div class="nav-item px-3">
+                <a class="nav-link" href="AccountSettings">
+                    <i class="bi bi-person-plus-fill"></i> Account Settings
+                </a>
+            </div>
+        </AuthorizeView>
+        <AuthorizeView>
+            <Authorized>
                       <div class="nav-item px-3">
                         <a class="nav-link" role="link" @onclick="PerformLogout">
                             <i class="bi bi-box-arrow-in-right"></i>Log out
@@ -52,14 +63,14 @@
                     </a>
                 </div>
                 </NotAuthorized>
-           </AuthorizeView>
-        </nav>
-    </div>
+           </AuthorizeView> 
+    </nav>
+</div>
 
 @code {
     private bool collapseNavMenu = true;
     private bool showNavToggler = false;
-    
+
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
