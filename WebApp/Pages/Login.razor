@@ -69,6 +69,12 @@
         try
         {
             await ((CustomAuthenticationStateProvider)AuthenticationStateProvider).ValidateLogin(email, password);
+
+            if ((await AuthStat).User == null)
+            {
+                return;
+            }
+
             var userPrincipal = (await AuthStat).User;
 
             UserService.SetUserId(int.Parse(userPrincipal.FindFirst(c => c.Type == ClaimTypes.SerialNumber)?.Value));
@@ -77,10 +83,10 @@
         }
         catch (Exception e)
         {
-            errorMessage = e.Message;
+            errorMessage = "No user found with provided email and password";
         }
     }
-    
+
     public async Task PerformLogout()
     {
         errorMessage = "";
