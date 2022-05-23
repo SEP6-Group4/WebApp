@@ -12,9 +12,9 @@
 
 @if (movieList.movies == null)
 {
-    <p>
-        <em>Loading...</em>
-    </p>
+    <div class="text-center">
+        <div class="spinner-border col-md-12" style="width: 3rem; height: 3rem;" role="status"></div>
+    </div>
 }
 else if (!movieList.movies.Any())
 {

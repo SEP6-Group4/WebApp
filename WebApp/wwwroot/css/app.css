@@ -3,6 +3,7 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-image:url(/CAE-Website-Full-Background-Texture1902x1200-9.jpg);
 }
 
 h1:focus {
@@ -89,6 +90,10 @@ a, .btn-link {
 .nav-item:first-of-type[b-c2wpa7m53j] {
     padding-top: 0rem !important;
     margin-top: 0rem !important;
+}
+
+.nav-item:last-of-type[b-c2wpa7m53j] {
+    padding-bottom: 11px !important;
 }
 
 @media screen and (min-width: 641px) {
