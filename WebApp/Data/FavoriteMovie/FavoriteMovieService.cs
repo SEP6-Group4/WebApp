@@ -43,9 +43,23 @@ namespace WebApp.Data.FavoriteMovie
             return results;
         }
 
+        public async Task<List<Movie>> GetFavoriteMoviesByUser(int userID)
+        {
+            string message = await client.GetStringAsync(url + "/getFavoritesByUser?userID=" + userID);
+            List<Movie> results = JsonSerializer.Deserialize<List<Movie>>(message);
+            return results;
+        }
+
         public async Task<List<IdCount>> GetFavoriteMoviesByAgeGroup(int ageGroup)
         {
             string message = await client.GetStringAsync(url + "/getFavoriteMovieIdsByAgeGroup?ageGroup=" + ageGroup);
+            List<IdCount> result = JsonSerializer.Deserialize<List<IdCount>>(message);
+            return result;
+        }
+
+        public async Task<List<IdCount>> GetFavoriteMoviesByAll()
+        {
+            string message = await client.GetStringAsync(url + "/getFavoriteMovieIdsByAll");
             List<IdCount> result = JsonSerializer.Deserialize<List<IdCount>>(message);
             return result;
         }
