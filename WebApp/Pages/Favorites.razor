@@ -16,8 +16,6 @@
 @if ((!actors.Any() || !movies.Any()) && !showList)
 {
     <div class="text-center">
-        <span>Please search...</span>
-
         <div class="row filter">
             <div class=" col-md-7">
                 <input type="search" @bind-value="searchQuery" placeholder="Enter an email..." class="form-control" maxlength="150" />
@@ -26,16 +24,14 @@
                 <i class="bi bi-search"></i>
             </button>
         </div>
-    </div>
 
-    @if (!string.IsNullOrWhiteSpace(message))
+            @if (!string.IsNullOrWhiteSpace(message))
             {
                 <div class="alert alert-danger">
                     @message
                 </div>
             }
-
-
+    </div>
 }
 else
 {
@@ -111,20 +107,30 @@ else
             }
         </div>
 
-        <div class="align-content-center" style="text-align:center">
+        @if (actors.Any() || movies.Any())
+        {
+          <div class="align-content-center" style="text-align:center">
             <a href="/Favorites" class="btn btn-white" @onclick="FirstPage" title="First Page"><i class="bi bi-chevron-double-left"></i> </a>
             <a href="/Favorites" class="btn btn-white" @onclick="PreviousPage" title="Previous Page"> <i class="bi bi-arrow-left-square"></i> </a>
             @if (isActors)
             {
-                <span>Page @currentPage of @actorList.TotalPage </span>
+                    if (actors.Any())
+                    {
+                      <span>Page @currentPage of @actorList.TotalPage </span>
+                    }        
             }
             else
             {
-                <span>Page @currentPage of @movieList.TotalPage </span>
+                if (movies.Any())
+                    {
+                      <span>Page @currentPage of @movieList.TotalPage </span>
+                    }      
             }
             <a href="/Favorites" class="btn btn-white" @onclick="NextPage" title="Next Page"><i class="bi bi-arrow-right-square"></i> </a>
             <a href="/Favorites" class="btn btn-white" @onclick="LastPage" title="Last Page"><i class="bi bi-chevron-double-right"></i> </a>
-        </div>
+        </div>  
+        }
+        
     </div>
 }
 @code {
@@ -166,6 +172,8 @@ else
         if (!isActors)
         {
             movies.Clear();
+            splitedMovieFavouriteList.Clear();
+            movieList = new MovieList();
             movieList = await GetFavMoviesByEmail();
             if (movieList == null)
             {
@@ -181,6 +189,8 @@ else
         else
         {
             actors.Clear();
+            splitedActorFavouriteList.Clear();
+            actorList = new ActorList();
             actorList.Actors = await GetFavActorsByEmail();
 
             if (actorList.Actors == null)
@@ -189,7 +199,6 @@ else
                 return;
             }
             actorList.Actors.ForEach(a => actors.Add(a));
-
             splitedActorFavouriteList = SplitListActor(actors);
             actorList.TotalPage = splitedActorFavouriteList.Count;
             FavouriteActorsListPage();
