@@ -9,7 +9,7 @@ namespace WebApp.Data.Actors
         string url = "https://localhost:7176/actor";
 #else
        
-        string url = "http://moviewebapi-dev.us-east-1.elasticbeanstalk.com/actor";
+        string url = "http://moviewebapi-prod.us-east-1.elasticbeanstalk.com/actor";
 #endif
 
         HttpClient client;

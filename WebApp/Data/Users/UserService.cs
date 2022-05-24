@@ -10,7 +10,7 @@ namespace WebApp.Data.Users
         string url = "https://localhost:7176/api/user";
 #else
        
-        string url = "http://moviewebapi-dev.us-east-1.elasticbeanstalk.com/api/user";
+        string url = "http://moviewebapi-prod.us-east-1.elasticbeanstalk.com/api/user";
 #endif
 
 

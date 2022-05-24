@@ -10,7 +10,7 @@ namespace WebApp.Data.FavouriteActor
         string url = "https://localhost:7176/FavouriteActor";
 #else
        
-        string url = "http://moviewebapi-dev.us-east-1.elasticbeanstalk.com/FavouriteActor";
+        string url = "http://moviewebapi-prod.us-east-1.elasticbeanstalk.com/FavouriteActor";
 #endif
 
         HttpClient client;
