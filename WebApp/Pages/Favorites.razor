@@ -13,100 +13,125 @@
 @inject IUserService UserService
 @inject NavigationManager uriHelper;
 
+@if ((!actors.Any() || !movies.Any()) && !showList)
+{
+     <div class="text-center">
+            <span>Please search...</span>
 
-
-<div class="container">
-    <div class="row filter">
-        <div class="col-md-3">
-            <select class="form-select" aria-label="Default select example" @onchange="@HandleChange">
-                <option value="Movies">Favorite Movies</option>
-                <option value="Actors">Favorite Actors</option>
-            </select>
-        </div>
-        <div class=" col-md-7">
-            <input type="search" @bind-value="searchQuery" placeholder="Enter an email..." class="form-control" maxlength="150" />
-        </div>
-        <button class="btn btn-primary" @onclick="GetFavorites">
-            <i class="bi bi-search"></i>
-        </button>
+            <div class="row filter">
+                <div class=" col-md-7">
+                    <input type="search" @bind-value="searchQuery" placeholder="Enter an email..." class="form-control" maxlength="150" />
+                </div>
+                <button class="btn btn-primary" @onclick="GetFavorites">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
     </div>
+    
+}
+else
+{    
+    <div class="container">
+        <div class="row filter">
+            <div class="col-md-3">
+                <select class="form-select" aria-label="Default select example" @onchange="@HandleChange">                                  
+                    <option value="Actors">Favorite Actors</option>
+                    <option value="Movies">Favorite Movies</option> 
+                </select>
+            </div>
+            <div class=" col-md-7">
+                <input type="search" @bind-value="searchQuery" placeholder="Enter an email..." class="form-control" maxlength="150" />
+            </div>
+            <button class="btn btn-primary" @onclick="GetFavorites">
+                <i class="bi bi-search"></i>
+            </button>
+        </div>
 
-    <div class="row">
-        @if (showList)
-        {
+        <div class="row">
+            @if (showList)
+            {
+                @if (isActors)
+                {
+                    @foreach (var a in actors)
+                    {
+                         <div class="col-md-2 card">
+                              <div>
+                                    <a href="/ActorOverview" class="card-img" @onclick="() => ActorSelected(a.Id)">
+                                    @if (a.ProfilePath != null)
+                                    {
+                                       <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@a.ProfilePath">
+                                    }
+                                    else
+                                    {
+                                      <img class="movie-image" src="/User_gray.png"> <br> <br> <br> <br> <br>
+                                    }
+
+                                    </a>
+                                </div>
+                             <div class="title">
+                                 <h5><a> @a.Name</a></h5>
+                             </div>
+                         </div>                
+                    }
+                }
+                else
+                {
+                    @foreach (var m in movies)
+                    {
+                         <div class="col-md-2 card">
+                             <div>
+                                <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
+                                   <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
+                                </a>
+                             </div>
+                             <div class="title">
+                                <h5><a> @m.title</a></h5>
+                                <p>
+                                   @m.release_date <br>
+                                   (@m.vote_average / 10)
+                                 </p>
+                              </div>
+                          </div>
+                    }
+                }            
+            }
+            @if (!string.IsNullOrWhiteSpace(message))
+            {
+                                    <div class="alert alert-danger">
+                    @message
+                                    </div>
+            }
+        </div>  
+
+        <div class="align-content-center" style="text-align:center">
+                <a href="/Favorites" class="btn btn-white" @onclick="FirstPage" title="First Page"><i class="bi bi-chevron-double-left"></i> </a>
+                <a href="/Favorites" class="btn btn-white" @onclick="PreviousPage" title="Previous Page"> <i class="bi bi-arrow-left-square"></i> </a>
             @if (isActors)
             {
-                @foreach (var a in actorList.Actors)
-                {
-                                                                    <div class="col-md-2 card">
-                                                                        <div>
-                                                                            <a href="/ActorOverview" class="card-img" @onclick="() => ActorSelected(a.Id)">
-                                @if (a.ProfilePath != null)
-                                {
-                                                                                                    <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@a.ProfilePath">
-                                }
-                                else
-                                {
-                                                                                                    <img class="movie-image" src="/User_gray.png"> <br> <br> <br> <br> <br>
-                                }
-
-                                                                            </a>
-                                                                        </div>
-                                                                        <div class="title">
-                                                                            <h5><a> @a.Name</a></h5>
-                                                                        </div>
-                                                                    </div>                
-                }
+                <span>Page @currentPage of @actorList.TotalPage </span>
             }
             else
             {
-                @foreach (var m in movieList.movies)
-                {
-                                                                    <div class="col-md-2 card">
-                                                                        <div>
-                                                                            <a href="/MovieOverview" class="card-img" @onclick="() => MovieSelected(m.id)">
-                                                                                <img class="movie-image" src="http://image.tmdb.org/t/p/w500/@m.poster_path">
-                                                                            </a>
-                                                                        </div>
-                                                                        <div class="title">
-                                                                            <h5><a> @m.title</a></h5>
-                                                                            <p>
-                                @m.release_date <br>
-                                                                                (@m.vote_average / 10)
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                }
-            }            
-        }
-        @if (!string.IsNullOrWhiteSpace(message))
-        {
-                                <div class="alert alert-danger">
-                @message
-                                </div>
-        }
-    </div>  
-
-    <div class="align-content-center" style="text-align:center">
-            <a href="/Actors" class="btn btn-white" @onclick="FirstPage" title="First Page"><i class="bi bi-chevron-double-left"></i> </a>
-            <a href="/Actors" class="btn btn-white" @onclick="PreviousPage" title="Previous Page"> <i class="bi bi-arrow-left-square"></i> </a>
-            <span>Page @currentPage of @actorList.TotalPage </span>
-            <a href="/Actors" class="btn btn-white" @onclick="NextPage" title="Next Page"><i class="bi bi-arrow-right-square"></i> </a>
-            <a href="/Actors" class="btn btn-white" @onclick="LastPage" title="Last Page"><i class="bi bi-chevron-double-right"></i> </a>
-        </div>
-</div>
-
+                 <span>Page @currentPage of @movieList.TotalPage </span>
+            }
+            <a href="/Favorites" class="btn btn-white" @onclick="NextPage" title="Next Page"><i class="bi bi-arrow-right-square"></i> </a>
+            <a href="/Favorites" class="btn btn-white" @onclick="LastPage" title="Last Page"><i class="bi bi-chevron-double-right"></i> </a>
+            </div>
+    </div>
+}
 @code {
     private MovieList movieList = new MovieList();
     private ActorList actorList = new ActorList();
-    private bool isActors = false;
+    private List<Actor> actors = new List<Actor>();
+    private List<Movie> movies = new List<Movie>();
+    private bool isActors = true;
     public string searchQuery = "";
     public bool showList = false;
     string message = String.Empty;
     private int currentPage = 1;
     private bool dropDownSelect = false;
-    private List<List<Actor>> splitedActorFavouriteList;
-    private List<List<Movie>> splitedMovieFavouriteList;
+    private List<List<Actor>> splitedActorFavouriteList = new List<List<Actor>>();
+    private List<List<Movie>> splitedMovieFavouriteList = new List<List<Movie>>();
 
     private async Task<MovieList> GetFavMoviesByEmail()
     {
@@ -132,28 +157,33 @@
 
         if (!isActors)
         {
-            MovieList tempMovies = await GetFavMoviesByEmail();
-            if (tempMovies == null)
+            movies.Clear();
+            movieList = await GetFavMoviesByEmail();
+            movieList.movies.ForEach(m => movies.Add(m));
+            if (movieList == null)
             {
                 message = "The user either does not exist or their privacy settings are blocking your request";
                 return;
             }
-            movieList = tempMovies;
-            splitedMovieFavouriteList = SplitListMovie(movieList.movies);
+            splitedMovieFavouriteList = SplitListMovie(movies);
+            movieList.TotalPage = splitedMovieFavouriteList.Count;
+            FavouriteMoviesListPage();
             showList = true;
         }
         else
         {
-            List<Actor> tempActors = await GetFavActorsByEmail();
-
-            if (tempActors == null)
+            actors.Clear();
+            actorList.Actors = await GetFavActorsByEmail();
+            actorList.Actors.ForEach(a => actors.Add(a));
+            if (actorList.Actors == null)
             {
                 message = "The user either does not exist or their privacy settings are blocking your request";
                 return;
             }
 
-            actorList.Actors = tempActors;
-            splitedActorFavouriteList = SplitListActor(actorList.Actors);
+            splitedActorFavouriteList = SplitListActor(actors);
+            actorList.TotalPage = splitedActorFavouriteList.Count;
+            FavouriteActorsListPage();
             showList = true;
         }
     }
@@ -161,7 +191,6 @@
     protected async Task NextPage()
     {
         if (searchQuery == string.Empty) return;
-
         if (currentPage < actorList.TotalPage)
         {
             currentPage += 1;
@@ -241,46 +270,41 @@
     {
         message = "";
         if (e.Value.Equals("Movies"))
-        {
-            isActors = false;
-            currentPage = 1;
-
+        {   
+            isActors = false; 
             await GetFavorites();
+            currentPage = 1;
             FavouriteMoviesListPage();
         }
         else if (e.Value.Equals("Actors"))
         {
-            isActors = true;
+            isActors = true; 
+            await GetFavorites();                 
             currentPage = 1;
-
-            await GetFavorites();
             FavouriteActorsListPage();
         }
+        dropDownSelect = true;
         await InvokeAsync(StateHasChanged);
     }
 
     private void FavouriteActorsListPage()
-    {
-        actorList.TotalPage = splitedActorFavouriteList.Count;
-
+    {        
         foreach (var item in splitedActorFavouriteList.Select((value, index) => new { value, index }))
         {
             if (item.index + 1 == currentPage)
             {
-                actorList.Actors = item.value;
+                actors = item.value;
             }
         }
     }
 
     private void FavouriteMoviesListPage()
-    {
-        movieList.TotalPage = splitedMovieFavouriteList.Count;
-
+    {       
         foreach (var item in splitedMovieFavouriteList.Select((value, index) => new { value, index }))
         {
             if (item.index + 1 == currentPage)
             {
-                movieList.movies = item.value;
+                movies = item.value;
             }
         }
     }
