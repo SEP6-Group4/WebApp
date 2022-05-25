@@ -33,13 +33,7 @@
                                         <label><i class="oi oi-globe">  </i> Country:</label>
                                         <InputText class="form-control" @bind-Value="updatedUser.Country" placeholder="Country" required />
                                     </div>
-                                    <div class="col-md-6">
-                                        <label><i class="oi oi-calendar">  </i> Date Of Birth:</label> <br />
-                                        <InputDate @bind-Value="@birthday" rows="1" />
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-6 ">
+                                     <div class="col-md-6 ">
                                         <label><i class="oi oi-globe">  </i> Account visibility:</label>
                                         <select class="form-select" aria-label="Default select example" @onchange="@HandleChange">
                                             <option value="Private">Private</option>
