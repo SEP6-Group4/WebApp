@@ -33,7 +33,7 @@
                                         <label><i class="oi oi-globe">  </i> Country:</label>
                                         <InputText class="form-control" @bind-Value="updatedUser.Country" placeholder="Country" required />
                                     </div>
-                                     <div class="col-md-6 ">
+                                    <div class="col-md-6 ">
                                         <label><i class="oi oi-globe">  </i> Account visibility:</label>
                                         <select class="form-select" aria-label="Default select example" @onchange="@HandleChange">
                                             <option value="Private">Private</option>
@@ -58,11 +58,20 @@
                         <div class="text-center">
                             <button class="btn btn-outline-success btn-block text-uppercase" type="submit" style="margin-top: 1rem; margin-bottom: .5rem; ">Update</button>
                         </div>
-                        @if (!string.IsNullOrWhiteSpace(message))
+                        @if (!string.IsNullOrWhiteSpace(message) || !string.IsNullOrWhiteSpace(message1))
                         {
-                            <div class="alert alert-danger">
-                                @message
-                            </div>
+                            @if (!string.IsNullOrWhiteSpace(message))
+                            {
+                                <div class="alert alert-danger">
+                                    @message
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="alert alert-success">
+                                    @message1
+                                </div>
+                            }
                         }
                     </div>
 
@@ -87,11 +96,12 @@
     private string password;
     private string confirmPassword;
     string message = String.Empty;
+    string message1 = String.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         updatedUser = await UsersService.GetUserByID(UsersService.GetUserId());
-        if(updatedUser.FavouritePrivacy == null)
+        if (updatedUser.FavouritePrivacy == null)
         {
             updatedUser.FavouritePrivacy = true;
         }
@@ -139,10 +149,13 @@
             }
 
             UsersService.UpdateAccount(updatedUser);
-            NavigationManager.NavigateTo("/login");
+            //NavigationManager.NavigateTo("/AccountSettings");
+            message = String.Empty;
+            message1 = "Successfully updated!";
         }
         else
         {
+            message1 = String.Empty;
             message = "Password does not match!";
         }
     }
@@ -155,7 +168,7 @@
         }
         else if (e.Value.Equals("Public"))
         {
-            updatedUser.FavouritePrivacy = false;            
+            updatedUser.FavouritePrivacy = false;
         }
         await InvokeAsync(StateHasChanged);
     }
